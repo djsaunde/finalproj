@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 fhs = read.csv('framingham.csv', header = T)
-fhs
+head(fhs)
 ```
 
 ```{r}
