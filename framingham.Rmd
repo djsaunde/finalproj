@@ -1,0 +1,48 @@
+---
+title: 'Causal Inference Final Project: Effect of Smoking on 10-year Development of
+  Cardiovascular Disease'
+author: "Daniel Saunders"
+date: "November 25, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Exploration
+
+```{r}
+fhs = read.csv('framingham.csv', header = T)
+fhs
+```
+
+```{r}
+summary(fhs)
+```
+
+```{r}
+table(fhs$TenYearCHD)
+```
+
+```{r}
+table(fhs$currentSmoker)
+```
+
+```{r}
+table(fhs$cigsPerDay)
+```
+
+```{r}
+dim(fhs)
+```
+
+# Causal Roadmap
+
+## Step 0: Specify the Scientific Question
+
+What is the effect of smoking on the ten-year development of Cardiovascular Disease? The target population is white middle-class men and women aged 30 to 62 (at baseline) in Framingham, Massachusetts. \textbf{Note: Professor Balzer's comment on our project description Google Document suggests this might be inadequate. Can we claim that our results generalize outside of Framingham? Why?}
+
+## Step 1: Specify a Causal Model
+
+
