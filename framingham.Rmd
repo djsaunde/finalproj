@@ -46,3 +46,51 @@ What is the effect of smoking on the ten-year development of Cardiovascular Dise
 ## Step 1: Specify a Causal Model
 
 
+
+## Step 2: Counterfactuals & Causal Parameter
+
+$$\Psi^*(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,...,14\}$$
+$$\Psi_O(\mathbb{P}^i_O)=\mathbb{E}_o[\mathbb{E}_o[Y|A \text{in bin i},\mathbb{W}]]$$
+
+
+
+$$\Psi_n(\mathbb{P}^i_n) = \frac{1}{n}\sum_{j=1}^n E_n(Y|A= \text{ in bin i},\mathbb{W})$$
+ 
+Remove NA's (need something smarter later)
+
+```{r}
+fhs <- fhs[complete.cases(fhs), ]
+```
+
+
+ We first need to bin cigs per day
+ 
+ 
+```{r}
+colnames(fhs)
+library(mltools)
+
+fhs_binned <- data.frame(i=1:nrow(fhs))
+
+fhs_binned$cigsPerDay  <- bin_data(fhs$cigsPerDay, bins=c(0,20,max(fhs$cigsPerDay)), binType = "explicit")
+ 
+fhs_binned$age  <- bin_data(fhs$age, bins=2, binType = "quantile")
+fhs_binned$education  <- bin_data(fhs$education, bins=2, binType = "quantile")
+fhs_binned$sysBP  <- bin_data(fhs$sysBP, bins=2, binType = "quantile")
+fhs_binned$diaBP  <- bin_data(fhs$diaBP, bins=2, binType = "quantile")
+fhs_binned$totChol  <- bin_data(fhs$totChol, bins=2, binType = "quantile")
+
+fhs_binned <- subset(fhs_binned, select = -c(i))
+
+
+
+```
+
+
+### NPMLE (from lab 2)
+
+```{r}
+fhs_binned[fhs_binned$cigsPerDay == "[20, 70]",]
+
+
+```
