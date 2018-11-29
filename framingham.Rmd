@@ -49,7 +49,8 @@ What is the effect of smoking on the ten-year development of Cardiovascular Dise
 
 ## Step 2: Counterfactuals & Causal Parameter
 
-$$\Psi^*(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,...,14\}$$
+$${\Psi^*}^{i}(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,...,14\}$$
+
 $$\Psi_O(\mathbb{P}^i_O)=\mathbb{E}_o[\mathbb{E}_o[Y|A \text{in bin i},\mathbb{W}]]$$
 
 
@@ -70,27 +71,53 @@ fhs <- fhs[complete.cases(fhs), ]
 colnames(fhs)
 library(mltools)
 
+## initalize empty binned dataframe 
 fhs_binned <- data.frame(i=1:nrow(fhs))
 
-fhs_binned$cigsPerDay  <- bin_data(fhs$cigsPerDay, bins=c(0,20,max(fhs$cigsPerDay)), binType = "explicit")
- 
+
+fhs_binned$cigsPerDay  <- factor(bin_data(fhs$cigsPerDay,bins=c(0,.9,10,20,30,40,50,60,max(fhs$cigsPerDay)), binType = "explicit"))
+
+fhs_binned$diabetes <- fhs$diabetes
+## Variables binned based on science!
 fhs_binned$age  <- bin_data(fhs$age, bins=2, binType = "quantile")
-fhs_binned$education  <- bin_data(fhs$education, bins=2, binType = "quantile")
-fhs_binned$sysBP  <- bin_data(fhs$sysBP, bins=2, binType = "quantile")
-fhs_binned$diaBP  <- bin_data(fhs$diaBP, bins=2, binType = "quantile")
-fhs_binned$totChol  <- bin_data(fhs$totChol, bins=2, binType = "quantile")
-
+fhs_binned$education  <- factor(fhs$education)
+fhs_binned$sysBP  <- bin_data(fhs$sysBP, bins=c(0,120,140,max(fhs$sysBP)), binType = "explicit")
+fhs_binned$diaBP  <- bin_data(fhs$diaBP, bins=c(0,80,90,max(fhs$diaBP)), binType = "explicit")
+fhs_binned$totChol  <- bin_data(fhs$totChol, bins=c(0,80,90,max(fhs$totChol)), binType = "explicit")
+fhs_binned$gender  <-factor(fhs$male)
+fhs_binned$bmi  <- bin_data(fhs$BMI, bins=c(0,18.5,25,30,max(fhs$BMI)), binType = "explicit")
+fhs_binned$glucose  <- bin_data(fhs$glucose, bins=c(0,78,max(fhs$glucose)), binType = "explicit")
+fhs_binned$heartRate  <- bin_data(fhs$heartRate, bins=c(0,60,max(fhs$heartRate)), binType = "explicit")
+fhs_binned$CHD <- factor(fhs$TenYearCHD)
+## remove index created 
 fhs_binned <- subset(fhs_binned, select = -c(i))
-
-
 
 ```
 
 
-### NPMLE (from lab 2)
+## Estimate
 
 ```{r}
-fhs_binned[fhs_binned$cigsPerDay == "[20, 70]",]
+library(glm)
+
+glm_fit <- glm( CHD ~ cigsPerDay + education + age + diabetes + bmi, data = fhs_binned, family = "binomial")
+
+intervene_on_bin <- function(i){
+  fhs_binned_i <- fhs_binned
+  fhs_binned_i$cigsPerDay <-levels(fhs_binned$cigsPerDay)[i]
+  return (fhs_binned_i)
+}
 
 
+average_treatment_effect <- c()
+average_treatment_effect_ci <- matrix(NA,nrow=8,ncol=2)
+for (i in 1:8){
+  average_treatment_effect[i] <- mean(predict(glm_fit, newdata=intervene_on_bin(i), type='response'))
+  average_treatment_effect_ci[i,] <- quantile(predict(glm_fit, newdata=intervene_on_bin(i), type='response'),probs=c(.025,.975))
+
+}
+
+plot(average_treatment_effect,type='l',xlab="Half-Packs per Day",ylab="Probability of CHD",ylim=c(0,.5))
+lines(average_treatment_effect_ci[,1],col='red',lty=2)
+lines(average_treatment_effect_ci[,2],col='red',lty=2)
 ```
