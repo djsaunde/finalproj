@@ -160,49 +160,64 @@ plot(c(IPTW_bin_1,IPTW_bin_2,IPTW_bin_3),type='l',col='blue')
 
 ## Superlearner/TMLE
 
-Only confusing thing here is that we have to use the weights we estimated from the correct bin. 
 
+
+BIN 3
 ```{r}
 
 library('SuperLearner')
-SL.library<- c("SL.gam")
+SL.library<- c("SL.glmnet")
 
 
-#### BIN 1 TMLE 
+### Bin1 TMLE
 
-X_minus_bin_1<- subset(fhs_binned, select= -CHD )
-
-for (i in 1:ncol(X_minus_bin_1)){
-  X_minus_bin_1[,i] <- as.numeric(X_minus_bin_1[,i])
-}
-
-X_minus_bin_1_1 <- X_minus_bin_1
-
-
-
+X_minus_bin_1<- subset(fhs_binned, select= c("cigsPerDay_bin_1", "education", "age","diabetes","bmi") )
+X_minus_bin_1_all_bin_1 <- X_minus_bin_1
+X_minus_bin_1_all_bin_1$cigsPerDay_bin_1 <- 1
 SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_1, SL.library=SL.library, family="binomial")
-
-expY.givenAW <- predict(SL.outcome, newdata=X_minus_bin_1)$pred
-
-
-
-
-SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=subset(X_minus_bin_1, select= -c(cigsPerDay_bin_1)),SL.library=SL.library, family="binomial")
-
+expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_1_all_bin_1)$pred
+SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_1==1), X=subset(X_minus_bin_1, select= -c(cigsPerDay_bin_1)),SL.library=SL.library, family="binomial")
 probA1.givenW<- SL.exposure$SL.predict
-
-probA0.givenW <- 1-probA1.givenW
-
-
-H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_1==1)/probA1.givenW# - as.numeric(fhs_binned$cigsPerDay_bin_1==0)/probA0.givenW
-
-logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenAW)) + H.AW, family='binomial')
-
-
+H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_1==1)/probA1.givenW
+logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
 epsilon<- logitUpdate$coef
-expY.givenAW.star<- plogis(qlogis(expY.givenAW)+ epsilon*H.AW)
+expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
+PsiHat.TMLE_bin_1<- mean(expY.givenAW.star)#- expY.given0W.star)
 
 
-PsiHat.TMLE <- mean(expY.givenAW.star)#- expY.given0W.star)
+X_minus_bin_2<- subset(fhs_binned, select= c("cigsPerDay_bin_2", "education", "age","diabetes","bmi") )
+X_minus_bin_2_all_bin_2 <- X_minus_bin_2
+X_minus_bin_2_all_bin_2$cigsPerDay_bin_2 <- 1
+SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_2, SL.library=SL.library, family="binomial")
+expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_2_all_bin_2)$pred
+SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_2==1), X=subset(X_minus_bin_2, select= -c(cigsPerDay_bin_2)),SL.library=SL.library, family="binomial")
+probA1.givenW<- SL.exposure$SL.predict
+H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_2==1)/probA1.givenW
+logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
+epsilon<- logitUpdate$coef
+expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
+PsiHat.TMLE_bin_2<- mean(expY.givenAW.star)#- expY.given0W.star)
+#### BIN 3 TMLE 
+
+X_minus_bin_3<- subset(fhs_binned, select= c("cigsPerDay_bin_3", "education", "age","diabetes","bmi") )
+X_minus_bin_3_all_bin_3 <- X_minus_bin_3
+X_minus_bin_3_all_bin_3$cigsPerDay_bin_3 <- 1
+SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_3, SL.library=SL.library, family="binomial")
+expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_3_all_bin_3)$pred
+SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_3==1), X=subset(X_minus_bin_3, select= -c(cigsPerDay_bin_3)),SL.library=SL.library, family="binomial")
+probA1.givenW<- SL.exposure$SL.predict
+H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_3==1)/probA1.givenW
+logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
+epsilon<- logitUpdate$coef
+expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
+PsiHat.TMLE_bin_3 <- mean(expY.givenAW.star)#- expY.given0W.star)
+
+```
+
+
+```{r}
+
+plot(c(PsiHat.TMLE_bin_1,PsiHat.TMLE_bin_2,PsiHat.TMLE_bin_3),type='l',ylab="TMLE")
+
 ```
 
