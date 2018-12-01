@@ -1,11 +1,14 @@
 ---
 title: 'Causal Inference Final Project: Effect of Smoking on 10-year Development of
-  Cardiovascular Disease'
-author: "Daniel Saunders"
+  Coronary Heart Disease'
+author: "Bianca Doone, Michael Attah, Graham Casey Gibson, Daniel Saunders, Nutcha Wattanachit"
 date: "November 25, 2018"
-output: pdf_document
+output:
+  pdf_document:
+           latex_engine: xelatex
+           fig_caption: yes
+           keep_tex: yes
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -41,33 +44,105 @@ dim(fhs)
 
 ## Step 0: Specify the Scientific Question
 
-What is the effect of smoking on the ten-year development of Cardiovascular Disease? The target population is white middle-class men and women aged 30 to 62 (at baseline) in Framingham, Massachusetts. \textbf{Note: Professor Balzer's comment on our project description Google Document suggests this might be inadequate. Can we claim that our results generalize outside of Framingham? Why?}
+What is the effect of smoking on the ten-year development of Coronary Heart Disease?
+
+#### Target population 
+
+The target population is white middle-class men and women aged 30 to 62 in the US. 
+
+
+The sameple in this study is white middle-class men and women aged 30 to 62 (at baseline) in Framingham, Massachusetts. We are willing to generalize to the target population because it is reasonable to assume that SES and risk factors among the sample and the target population are adequately homogenous.
 
 ## Step 1: Specify a Causal Model
+<!--Use a SCM to represent your knowledge (and its limits) about the
+system you will study. If you have uncertainty in specifying your SCM, discuss that explicitly and explain why you made the decisions you did.
+NW - below is just a place holder so we can edit later-->
 
+- Endogenous nodes: $X = (W1,W2,A,Y)$, where $W1$ is a group of covariates, W2 is another group of covariates, A is smoking status, and Y is the ten-year development of cardiovascular disease.
+
+- Exogenous nodes: $U = (U_{W1}, U_{W2}, U_A , U_Y) \sim \mathbb{P}_U$. We make no assumptions about the distribution $\mathbb{P}_U$.
+
+- Structural equations $F$:
+$$
+\begin{aligned}
+W1 &\leftarrow  f_{W1}(U_{W1})\\
+W2 &\leftarrow  f_{W2}(W1,U_{W2})\\
+A  &\leftarrow f_A(W1,W2,U_A)\\
+Y  &\leftarrow f_Y(W1,W2,A,U_Y)\\
+\end{aligned}
+$$
+
+There are no exclusion restrictions or assumptions about functional form.
 
 
 ## Step 2: Counterfactuals & Causal Parameter
 
-$${\Psi^*}^{i}(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,...,14\}$$
+#### Causal Parameter
+$${\Psi^*}^{i}(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,2,3\}$$
+where $i$ represent the bin of cigarettes smoked per day. $Y_i$ denotes the counterfactual outcome (the ten-year development of cardiovascular disease), if possibly contrary to fact, a person's number of cigarettes smoked per day is within $i^{th}$ bin. Here we let $\mathbb{W} = \{W_1,W_2\}$
 
-$$\Psi_O(\mathbb{P}^i_O)=\mathbb{E}_o[\mathbb{E}_o[Y|A \text{in bin i},\mathbb{W}]]$$
+#### G-Computation
+
+$$\Psi_O(\mathbb{P}^i_O)=\mathbb{E}_o[\mathbb{E}_o[Y|A=a \text{ in bin } i,\mathbb{W}]]$$
+
+$$\Psi_n(\mathbb{P}^i_n) = \frac{1}{n}\sum_{j=1}^n \mathbb{E}_n(Y|A=a \text{ in bin } i,\mathbb{W})$$
+where $j$ indexes 1 to (TBD) observations. 
+
+#### IPTW
+
+$$IPTW^i = \frac{1}{n} \sum_{j}^n Y\frac{ \mathbb{I} (A \in i)}{P(A \in i | \mathbb{W})}$$ 
+
+#### Targeted Maximum Likelihood Estimate (TMLE)
+
+## Step 3. Specify your observed data and its link to the causal model
+
+- Describe your observed data and its link to the causal model you have specified. If you feel that in reality the link between your causal model and the observed data is more complex than we have learned in class (n i.i.d. copies of random variable O), explain why. But for this project, stick with the simple link we have learned in class.
 
 
+The dataset is adapted from Framingham Heart Study. All covariate data is assumed to be collected at baseline, and then a 10-year follow up on CHD (unlike the study). 
+<!--NW-still need to specify the link here-->
 
-$$\Psi_n(\mathbb{P}^i_n) = \frac{1}{n}\sum_{j=1}^n E_n(Y|A= \text{ in bin i},\mathbb{W})$$
- 
+
+- Be sure to include a basic descriptive table of your data that provides information on the outcome, exposure, and covariate distributions. (i.e. a classic “Table 1” in the applied public health and medical literature.) Feel free to ask for guidance if you are not sure what this should look like.
+
+\begin{table}[ht]
+\centering
+\caption{Descriptive Table}
+\begin{tabular}{|l|l|l|}
+\hline
+Variable Name & Covariate & Description \\ \hline
+male & Gender & binary: \ male = 1 \ female = 0 \\ \hline
+age & Age & ordinal: \ 32-38, 39-40, 41-43, 44-45, 46-48 \\
+& & 49-51, 52-54, 55-57, 58-61, 62-70 \\ \hline
+education & Education level & ordinal: \ 1 = some high school, 2 = high school/GED \\
+& & 3 = some college/vocational school, 4 = college \\ \hline
+currentSmoker & Current Smoking Status & binary: \ 1 = Yes \ 0 = No \\ \hline
+cigsPerDay & Number of cigarettes per day & ordinal: \ 0, 1-19, 20-70 \\ \hline
+BPMeds & Indicator of blood pressure medication & binary: \ 1 = Yes \  0 = No \\ \hline
+prevalentStroke & Prevalence of Stroke & binary: \ 1 = Yes \ 0 = No \\ \hline
+prevalentHyp & Prevalence of Hypertension & binary: \ 1 = Yes \ 0 = No \\ \hline
+diabetes & Prevalence of Diabetes & binary: \ 1 = Yes \ 0 = No \\ \hline
+totChol & Total Cholesterol Level & ordinal: \ 0-79, 80-89, 90-600 \\ \hline
+sysBP & Systolic Blood Pressure & ordinal: \ 0-119, 120-139, 140-295 \\ \hline
+diaBP & Diastolic Blood Pressure & ordinal: \ 0-79, 80-89, 90-142.5  \\ \hline
+BMI & Body Mass Index & ordinal: \ 0-18.4, 18.5-24.9, 25-29.9, 30-56.8 \\ \hline
+heartRate & Heart Rate & ordinal: \ 0-59, 60 -143 \\ \hline
+glucose & Glucose Level & ordinal: \ 0-77, 78-394 \\ \hline
+TenYearCHD & Ten Year Follow-Up Prevalence & binary: \ 1 = Yes (had CHD) \\
+& & 0 = No (do not have CHD) \\ \hline
+\end{tabular}
+\end{table}
+
+
 Remove NA's (need something smarter later)
 
-```{r}
+```{r, include = FALSE}
 fhs <- fhs[complete.cases(fhs), ]
 ```
 
 
- We first need to bin cigs per day
  
- 
-```{r}
+```{r, include = FALSE}
 colnames(fhs)
 library(mltools)
 
@@ -91,11 +166,16 @@ fhs_binned$heartRate  <- bin_data(fhs$heartRate, bins=c(0,60,max(fhs$heartRate))
 fhs_binned$CHD <- factor(fhs$TenYearCHD)
 ## remove index created 
 fhs_binned <- subset(fhs_binned, select = -c(i))
-
 ```
 
+## Step 4. Identifiability
+Is your target causal parameter identified under your initial causal model? If not, under what additional assumptions would it be identified? How plausible are these for your particular problem? Are there additional data or changes to your study design that would improve their plausibility?
 
-## Conditional Mean outcome 
+## Step 5. Statistical Model and Estimand
+
+## Step 6. Estimation
+
+### Conditional Mean outcome 
 
 ```{r}
 library(mgcv)
@@ -122,7 +202,7 @@ lines(average_treatment_effect_ci[,1],col='red',lty=2)
 lines(average_treatment_effect_ci[,2],col='red',lty=2)
 ```
 
-## IPTW
+### IPTW
 ```{r}
 
 ### Create pairwise binary variables for each bin
@@ -158,7 +238,7 @@ plot(c(IPTW_bin_1,IPTW_bin_2,IPTW_bin_3),type='l',col='blue')
 ```
 
 
-## Superlearner/TMLE
+### Superlearner/TMLE
 
 
 
@@ -220,3 +300,7 @@ PsiHat.TMLE_bin_3 <- mean(expY.givenAW.star)#- expY.given0W.star)
 plot(c(PsiHat.TMLE_bin_1,PsiHat.TMLE_bin_2,PsiHat.TMLE_bin_3),type='l',ylab="TMLE")
 
 ```
+
+## Step 7. Result Interpretation
+
+What is the statistical interpretation of your analyses? Discuss differences (or lack thereof) in the estimates provided by the different estimators. What is the causal interpretation of your results and how plausible is it? What are key limitations of your analysis? How might these results (if at all) inform policy, understanding, and/or the design of future studies?
