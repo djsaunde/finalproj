@@ -75,11 +75,11 @@ library(mltools)
 fhs_binned <- data.frame(i=1:nrow(fhs))
 
 
-fhs_binned$cigsPerDay  <- factor(bin_data(fhs$cigsPerDay,bins=c(0,.9,10,20,30,40,50,60,max(fhs$cigsPerDay)), binType = "explicit"))
-
+fhs_binned$cigsPerDay  <-bin_data(fhs$cigsPerDay,bins=c(0,.9,20,max(fhs$cigsPerDay)), binType = "explicit")
+ plot(fhs_binned$cigsPerDay)
 fhs_binned$diabetes <- fhs$diabetes
 ## Variables binned based on science!
-fhs_binned$age  <- bin_data(fhs$age, bins=2, binType = "quantile")
+fhs_binned$age  <- bin_data(fhs$age, bins=10, binType = "quantile")
 fhs_binned$education  <- factor(fhs$education)
 fhs_binned$sysBP  <- bin_data(fhs$sysBP, bins=c(0,120,140,max(fhs$sysBP)), binType = "explicit")
 fhs_binned$diaBP  <- bin_data(fhs$diaBP, bins=c(0,80,90,max(fhs$diaBP)), binType = "explicit")
@@ -95,12 +95,12 @@ fhs_binned <- subset(fhs_binned, select = -c(i))
 ```
 
 
-## Estimate
+## Conditional Mean outcome 
 
 ```{r}
-library(glm)
-
-glm_fit <- glm( CHD ~ cigsPerDay + education + age + diabetes + bmi, data = fhs_binned, family = "binomial")
+library(mgcv)
+glm_fit <- glm( CHD ~ cigsPerDay + education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+summary(glm_fit)
 
 intervene_on_bin <- function(i){
   fhs_binned_i <- fhs_binned
@@ -110,14 +110,113 @@ intervene_on_bin <- function(i){
 
 
 average_treatment_effect <- c()
-average_treatment_effect_ci <- matrix(NA,nrow=8,ncol=2)
-for (i in 1:8){
+average_treatment_effect_ci <- matrix(NA,nrow=length(levels(fhs_binned$cigsPerDay)),ncol=2)
+for (i in 1:length(levels(fhs_binned$cigsPerDay))){
   average_treatment_effect[i] <- mean(predict(glm_fit, newdata=intervene_on_bin(i), type='response'))
   average_treatment_effect_ci[i,] <- quantile(predict(glm_fit, newdata=intervene_on_bin(i), type='response'),probs=c(.025,.975))
 
 }
 
-plot(average_treatment_effect,type='l',xlab="Half-Packs per Day",ylab="Probability of CHD",ylim=c(0,.5))
+plot(average_treatment_effect,type='l',ylab="Probability of CHD",ylim=c(0,.5))
 lines(average_treatment_effect_ci[,1],col='red',lty=2)
 lines(average_treatment_effect_ci[,2],col='red',lty=2)
+```
+
+## IPTW
+```{r}
+
+### Create pairwise binary variables for each bin
+fhs_binned$cigsPerDay_bin_1 <- ifelse(fhs_binned$cigsPerDay == "[0, 0.9)",1,0)
+fhs_binned$cigsPerDay_bin_2 <- ifelse(fhs_binned$cigsPerDay == "[0.9, 20)",1,0)
+fhs_binned$cigsPerDay_bin_3 <- ifelse(fhs_binned$cigsPerDay == "[20, 70]",1,0)
+
+### BIN 2
+glm_fit_iptw_bin_1 <- glm( cigsPerDay_bin_1 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+prob.1W <- predict(glm_fit_iptw_bin_1, type= "response")
+wt_1<- 1/prob.1W
+summary(wt_1)
+IPTW_bin_1<- mean( wt_1*as.numeric(fhs_binned$cigsPerDay_bin_1==1)*as.numeric(fhs_binned$CHD==1))
+
+### BIN 2
+glm_fit_iptw_bin_2 <- glm( cigsPerDay_bin_2 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+prob.1W <- predict(glm_fit_iptw_bin_2, type= "response")
+wt_2<- 1/prob.1W
+summary(wt_2)
+IPTW_bin_2<- mean( wt_2*as.numeric(fhs_binned$cigsPerDay_bin_2==1)*as.numeric(fhs_binned$CHD==1))
+
+### BIN 3
+glm_fit_iptw_bin_3 <- glm( cigsPerDay_bin_3 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+prob.1W <- predict(glm_fit_iptw_bin_3, type= "response")
+wt_3<- 1/prob.1W
+summary(wt_3)
+IPTW_bin_3<- mean( wt_3*as.numeric(fhs_binned$cigsPerDay_bin_3==1)*as.numeric(fhs_binned$CHD==1))
+
+plot(c(IPTW_bin_1,IPTW_bin_2,IPTW_bin_3),type='l',col='blue')
+
+
+
+```
+
+
+## Superlearner/TMLE
+
+
+
+BIN 3
+```{r}
+
+library('SuperLearner')
+SL.library<- c("SL.glmnet")
+
+
+### Bin1 TMLE
+
+X_minus_bin_1<- subset(fhs_binned, select= c("cigsPerDay_bin_1", "education", "age","diabetes","bmi") )
+X_minus_bin_1_all_bin_1 <- X_minus_bin_1
+X_minus_bin_1_all_bin_1$cigsPerDay_bin_1 <- 1
+SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_1, SL.library=SL.library, family="binomial")
+expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_1_all_bin_1)$pred
+SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_1==1), X=subset(X_minus_bin_1, select= -c(cigsPerDay_bin_1)),SL.library=SL.library, family="binomial")
+probA1.givenW<- SL.exposure$SL.predict
+H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_1==1)/probA1.givenW
+logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
+epsilon<- logitUpdate$coef
+expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
+PsiHat.TMLE_bin_1<- mean(expY.givenAW.star)#- expY.given0W.star)
+
+
+X_minus_bin_2<- subset(fhs_binned, select= c("cigsPerDay_bin_2", "education", "age","diabetes","bmi") )
+X_minus_bin_2_all_bin_2 <- X_minus_bin_2
+X_minus_bin_2_all_bin_2$cigsPerDay_bin_2 <- 1
+SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_2, SL.library=SL.library, family="binomial")
+expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_2_all_bin_2)$pred
+SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_2==1), X=subset(X_minus_bin_2, select= -c(cigsPerDay_bin_2)),SL.library=SL.library, family="binomial")
+probA1.givenW<- SL.exposure$SL.predict
+H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_2==1)/probA1.givenW
+logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
+epsilon<- logitUpdate$coef
+expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
+PsiHat.TMLE_bin_2<- mean(expY.givenAW.star)#- expY.given0W.star)
+#### BIN 3 TMLE 
+
+X_minus_bin_3<- subset(fhs_binned, select= c("cigsPerDay_bin_3", "education", "age","diabetes","bmi") )
+X_minus_bin_3_all_bin_3 <- X_minus_bin_3
+X_minus_bin_3_all_bin_3$cigsPerDay_bin_3 <- 1
+SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_3, SL.library=SL.library, family="binomial")
+expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_3_all_bin_3)$pred
+SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_3==1), X=subset(X_minus_bin_3, select= -c(cigsPerDay_bin_3)),SL.library=SL.library, family="binomial")
+probA1.givenW<- SL.exposure$SL.predict
+H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_3==1)/probA1.givenW
+logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
+epsilon<- logitUpdate$coef
+expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
+PsiHat.TMLE_bin_3 <- mean(expY.givenAW.star)#- expY.given0W.star)
+
+```
+
+
+```{r}
+
+plot(c(PsiHat.TMLE_bin_1,PsiHat.TMLE_bin_2,PsiHat.TMLE_bin_3),type='l',ylab="TMLE")
+
 ```
