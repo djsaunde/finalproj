@@ -153,15 +153,25 @@ fhs_binned <- data.frame(i=1:nrow(fhs))
 fhs_binned$cigsPerDay  <-bin_data(fhs$cigsPerDay,bins=c(0,.9,20,max(fhs$cigsPerDay)), binType = "explicit")
  plot(fhs_binned$cigsPerDay)
 fhs_binned$diabetes <- fhs$diabetes
+fhs_binned$prevalentStroke <- fhs$prevalentStroke
+fhs_binned$prevalentHyp <- fhs$prevalentHyp
 ## Variables binned based on science!
+#### MAYBE USE LESS BINS FOR AGE
 fhs_binned$age  <- bin_data(fhs$age, bins=10, binType = "quantile")
 fhs_binned$education  <- factor(fhs$education)
+
+### COULD PROBABLY MAKE ONE BP VARIABLE
 fhs_binned$sysBP  <- bin_data(fhs$sysBP, bins=c(0,120,140,max(fhs$sysBP)), binType = "explicit")
 fhs_binned$diaBP  <- bin_data(fhs$diaBP, bins=c(0,80,90,max(fhs$diaBP)), binType = "explicit")
-fhs_binned$totChol  <- bin_data(fhs$totChol, bins=c(0,80,90,max(fhs$totChol)), binType = "explicit")
+
+
+fhs_binned$totChol  <- bin_data(fhs$totChol, bins=c(0,200,240,max(fhs$totChol)), binType = "explicit") 
 fhs_binned$gender  <-factor(fhs$male)
 fhs_binned$bmi  <- bin_data(fhs$BMI, bins=c(0,18.5,25,30,max(fhs$BMI)), binType = "explicit")
+
+#USE DIABETES INSTEAD OF GLUCOSE!!
 fhs_binned$glucose  <- bin_data(fhs$glucose, bins=c(0,78,max(fhs$glucose)), binType = "explicit")
+
 fhs_binned$heartRate  <- bin_data(fhs$heartRate, bins=c(0,60,max(fhs$heartRate)), binType = "explicit")
 fhs_binned$CHD <- factor(fhs$TenYearCHD)
 ## remove index created 
@@ -232,9 +242,6 @@ summary(wt_3)
 IPTW_bin_3<- mean( wt_3*as.numeric(fhs_binned$cigsPerDay_bin_3==1)*as.numeric(fhs_binned$CHD==1))
 
 plot(c(IPTW_bin_1,IPTW_bin_2,IPTW_bin_3),type='l',col='blue')
-
-
-
 ```
 
 
