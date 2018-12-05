@@ -41,6 +41,11 @@ dim(fhs)
 ```
 
 # Causal Roadmap
+## Background Story
+
+Cardiovascular disease (CVD) is the leading cause of death and serious illness in the United States. The objective of the Framingham Heart Study was to identify the common factors or characteristics that contribute to CVD by following its development over a long period of time in a large group of participants who had not yet developed overt symptoms of CVD or suffered a heart attack or stroke.
+
+The researchers recruited 5,209 men and women between the ages of 30 and 62 from the town of Framingham, Massachusetts, and began the first round of extensive physical examinations and lifestyle interviews that they would later analyze for common patterns related to CVD development. Over the years, careful monitoring of the Framingham Study population has led to the identification of the major CVD risk factors – high blood pressure, high blood cholesterol, smoking, obesity, diabetes, and physical inactivity – as well as a great deal of valuable information on the effects of related factors such as blood triglyceride and HDL cholesterol levels, age, gender, and psychosocial issues. Although the Framingham cohort is primarily Caucasian, the importance of the major CVD risk factors identified in this group have been shown in other studies to apply almost universally among racial and ethnic groups, even though the patterns of distribution may vary from group to group.
 
 ## Step 0: Specify the Scientific Question
 
@@ -142,7 +147,10 @@ TenYearCHD & Ten Year Follow-Up Prevalence & binary: \ 1 = Yes (had CHD) \\
 Remove NA's (need something smarter later)
 
 ```{r, include = FALSE}
+library(dplyr)
 fhs <- fhs[complete.cases(fhs), ]
+#fhs <- fhs %>%
+#  filter(!is.na(cigsPerDay),!is.na(TenYearCHD))
 ```
 
 
@@ -153,10 +161,7 @@ library(mltools)
 
 ## initalize empty binned dataframe 
 fhs_binned <- data.frame(i=1:nrow(fhs))
-
-
 fhs_binned$cigsPerDay  <-bin_data(fhs$cigsPerDay,bins=c(0,.9,20,max(fhs$cigsPerDay)), binType = "explicit")
- plot(fhs_binned$cigsPerDay)
 fhs_binned$diabetes <- fhs$diabetes
 fhs_binned$prevalentStroke <- fhs$prevalentStroke
 fhs_binned$prevalentHyp <- fhs$prevalentHyp
@@ -187,6 +192,19 @@ fhs_binned <- subset(fhs_binned, select = -c(i))
 Is your target causal parameter identified under your initial causal model? If not, under what additional assumptions would it be identified? How plausible are these for your particular problem? Are there additional data or changes to your study design that would improve their plausibility?
 
 ## Step 5. Statistical Model and Estimand
+
+The target parameter of $\mathbb{P}_0$, which equals the causal parameter in the augmented causal model $\mathcal{M}^{**}$ is given by the G-Computation formula:
+
+
+$$
+\begin{aligned}
+\Psi_0(\mathbb{P}^i_0)&=\mathbb{E}_0[\mathbb{E}_0[Y|A=a \text{ in bin } i,W=w]]\\
+&= \sum_w\mathbb{E}_0[Y|A=a \text{ in bin } i,W=w]*\mathbb{P}_0(W=w)
+\end{aligned}
+$$
+
+<!--$$\Psi_n(\mathbb{P}^i_n) = \frac{1}{n}\sum_{j=1}^n \mathbb{E}_n(Y|A=a \text{ in bin } i,\mathbb{W})$$
+where $j$ indexes 1 to (TBD) observations.--> 
 
 ## Step 6. Estimation
 
