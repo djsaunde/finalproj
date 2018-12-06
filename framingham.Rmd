@@ -152,7 +152,6 @@ fhs <- fhs %>%  filter(!is.na(cigsPerDay),!is.na(TenYearCHD))
 
  
 ```{r, include = FALSE}
-colnames(fhs)
 library(mltools)
 
 ## initalize empty binned dataframe 
@@ -229,25 +228,37 @@ where $j$ indexes 1 to (TBD) observations.-->
 
 ```{r}
 library(mgcv)
-glm_fit <- glm( CHD ~ cigsPerDay + education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
-summary(glm_fit)
 
-intervene_on_bin <- function(i){
-  fhs_binned_i <- fhs_binned
-  fhs_binned_i$cigsPerDay <-levels(fhs_binned$cigsPerDay)[i]
+n_bootstrap_samples <-10
+conMean_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
+
+for(i in 1:n_bootstrap_samples){
+  set.seed(i)
+  fhs_binned_sample <- fhs_binned[sample(1:nrow(fhs_binned),nrow(fhs_binned),replace=TRUE),]
+  
+  intervene_on_bin <- function(i){
+  fhs_binned_i <- fhs_binned_sample
+  fhs_binned_i$cigsPerDay <-levels(fhs_binned_sample$cigsPerDay)[i]
   return (fhs_binned_i)
 }
+  
+glm_fit <- glm( CHD ~ cigsPerDay + education + age + diabetes + bmi , data = fhs_binned_sample, family = "binomial")
 
+for (j in 1:length(levels(fhs_binned$cigsPerDay))){
+  conMean_bootstrap[i,j] <- mean(predict(glm_fit, newdata=intervene_on_bin(j), type='response'))
+}
+}
 
 average_treatment_effect <- c()
-average_treatment_effect_ci <- matrix(NA,nrow=length(levels(fhs_binned$cigsPerDay)),ncol=2)
-for (i in 1:length(levels(fhs_binned$cigsPerDay))){
-  average_treatment_effect[i] <- mean(predict(glm_fit, newdata=intervene_on_bin(i), type='response'))
-  average_treatment_effect_ci[i,] <- quantile(predict(glm_fit, newdata=intervene_on_bin(i), type='response'),probs=c(.025,.975))
+average_treatment_effect_ci <- matrix(NA,nrow=length(levels(fhs_binned_sample$cigsPerDay)),ncol=2)
+for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
+  average_treatment_effect[i] <- colMeans(conMean_bootstrap)[i]
+  average_treatment_effect_ci[i,] <- quantile(conMean_bootstrap[,i],probs=c(.025,.975))
 
 }
 
-plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5))
+plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
+     main = "Conditional Mean")
 points(average_treatment_effect_ci[,1],col='red',lty=2)
 points(average_treatment_effect_ci[,2],col='red',lty=2)
 ```
@@ -261,42 +272,61 @@ fhs_binned$cigsPerDay_bin_2 <- ifelse(fhs_binned$cigsPerDay == "[1, 10)",1,0)
 fhs_binned$cigsPerDay_bin_3 <- ifelse(fhs_binned$cigsPerDay == "[10, 20)",1,0)
 fhs_binned$cigsPerDay_bin_4 <- ifelse(fhs_binned$cigsPerDay == "[20, 70]",1,0)
 
+n_bootstrap_samples <-10
+iptw_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
+
+for (i in 1:n_bootstrap_samples){
+  set.seed(i)
+  fhs_binned_sample <- fhs_binned[sample(1:nrow(fhs_binned),nrow(fhs_binned),replace=TRUE),]
+
 ### BIN 1
-glm_fit_iptw_bin_1 <- glm( cigsPerDay_bin_1 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+glm_fit_iptw_bin_1 <- glm( cigsPerDay_bin_1 ~   education + age + diabetes + bmi , data = fhs_binned_sample, family = "binomial")
 prob.1W <- predict(glm_fit_iptw_bin_1, type= "response")
 wt_1<- 1/prob.1W
 summary(wt_1)
-IPTW_bin_1<- mean( wt_1*as.numeric(fhs_binned$cigsPerDay_bin_1==1)*as.numeric(fhs_binned$CHD==1))
-IPTW_bin_1_ci <- quantile(wt_1*as.numeric(fhs_binned$cigsPerDay_bin_1==1)*as.numeric(fhs_binned$CHD==1),probs=c(.025,.975))
+IPTW_bin_1<- mean( wt_1*as.numeric(fhs_binned_sample$cigsPerDay_bin_1==1)*as.numeric(fhs_binned_sample$CHD==1))
+
 
 ### BIN 2
-glm_fit_iptw_bin_2 <- glm( cigsPerDay_bin_2 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+glm_fit_iptw_bin_2 <- glm( cigsPerDay_bin_2 ~   education + age + diabetes + bmi , data = fhs_binned_sample, family = "binomial")
 prob.1W <- predict(glm_fit_iptw_bin_2, type= "response")
 wt_2<- 1/prob.1W
 summary(wt_2)
-IPTW_bin_2<- mean( wt_2*as.numeric(fhs_binned$cigsPerDay_bin_2==1)*as.numeric(fhs_binned$CHD==1))
-IPTW_bin_2_ci <- quantile(wt_2*as.numeric(fhs_binned$cigsPerDay_bin_2==1)*as.numeric(fhs_binned$CHD==1),probs=c(.025,.975))
+IPTW_bin_2<- mean( wt_2*as.numeric(fhs_binned_sample$cigsPerDay_bin_2==1)*as.numeric(fhs_binned_sample$CHD==1))
 
 ### BIN 3
-glm_fit_iptw_bin_3 <- glm( cigsPerDay_bin_3 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+glm_fit_iptw_bin_3 <- glm( cigsPerDay_bin_3 ~   education + age + diabetes + bmi , data = fhs_binned_sample, family = "binomial")
 prob.1W <- predict(glm_fit_iptw_bin_3, type= "response")
 wt_3<- 1/prob.1W
 summary(wt_3)
-IPTW_bin_3<- mean( wt_3*as.numeric(fhs_binned$cigsPerDay_bin_3==1)*as.numeric(fhs_binned$CHD==1))
-IPTW_bin_3_ci <- quantile((wt_3*as.numeric(fhs_binned$cigsPerDay_bin_3==1)*as.numeric(fhs_binned$CHD==1)),probs=c(.025,.975))
+IPTW_bin_3<- mean( wt_3*as.numeric(fhs_binned_sample$cigsPerDay_bin_3==1)*as.numeric(fhs_binned_sample$CHD==1))
+
 
 ### BIN 4
-glm_fit_iptw_bin_4 <- glm( cigsPerDay_bin_4 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+glm_fit_iptw_bin_4 <- glm( cigsPerDay_bin_4 ~   education + age + diabetes + bmi , data = fhs_binned_sample, family = "binomial")
 prob.1W <- predict(glm_fit_iptw_bin_4, type= "response")
 wt_4<- 1/prob.1W
 summary(wt_4)
-IPTW_bin_4<- mean( wt_4*as.numeric(fhs_binned$cigsPerDay_bin_4==1)*as.numeric(fhs_binned$CHD==1))
-IPTW_bin_4_ci <- quantile(wt_4*as.numeric(fhs_binned$cigsPerDay_bin_4==1)*as.numeric(fhs_binned$CHD==1),probs=c(.025,.975))
+IPTW_bin_4<- mean( wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.numeric(fhs_binned_sample$CHD==1))
 
-plot(c(IPTW_bin_1,IPTW_bin_2,IPTW_bin_3,IPTW_bin_4),type='l',col='blue',ylab="IPTW Estimate of CHD",xlab="Bin")
-lines(IPTW_bin_1_ci)
-lines(c(IPTW_bin_1_ci[1],IPTW_bin_2_ci[1],IPTW_bin_3_ci[1],IPTW_bin_4_ci[1]), type = "l", col = "red")
-lines(c(IPTW_bin_1_ci[2],IPTW_bin_2_ci[2],IPTW_bin_3_ci[2],IPTW_bin_4_ci[2]), type = "l", col = "red")
+iptw_bootstrap[i,] = c(IPTW_bin_1, IPTW_bin_2, IPTW_bin_3, IPTW_bin_4)
+}
+
+average_treatment_effect <- c()
+average_treatment_effect_ci <- matrix(NA,nrow=length(levels(fhs_binned_sample$cigsPerDay)),ncol=2)
+for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
+  average_treatment_effect[i] <- colMeans(iptw_bootstrap)[i]
+  average_treatment_effect_ci[i,] <- quantile(iptw_bootstrap[,i],probs=c(.025,.975))
+
+}
+
+plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
+     main = "IPTW")
+points(average_treatment_effect_ci[,1],col='red',lty=2)
+points(average_treatment_effect_ci[,2],col='red',lty=2)
+
+
+
 ```
 
 
@@ -311,7 +341,7 @@ n_bootstrap_samples <-10
 tmle_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 
 for (i in 1:n_bootstrap_samples){
-  
+  set.seed(i)
   ### BIN1 TMLE
   fhs_binned_sample <- fhs_binned[sample(1:nrow(fhs_binned),nrow(fhs_binned),replace=TRUE),]
   
@@ -324,7 +354,7 @@ for (i in 1:n_bootstrap_samples){
   ##CONVERT FACTORS TO NUMERIC FOR SUPERLEARNER
   
   
-  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_1, SL.library=SL.library, family="binomial")
+  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_1, SL.library=SL.library, family="binomial")
   
   
   expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_1_all_bin_1)$pred
@@ -345,7 +375,7 @@ for (i in 1:n_bootstrap_samples){
   X_minus_bin_2_all_bin_2 <- X_minus_bin_2
   X_minus_bin_2_all_bin_2$cigsPerDay_bin_2 <- 1
   
-  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_2, SL.library=SL.library, family="binomial")
+  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_2, SL.library=SL.library, family="binomial")
   expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_2_all_bin_2)$pred
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_2==1), X=subset(X_minus_bin_2, select= -c(cigsPerDay_bin_2)),SL.library=SL.library, family="binomial")
   probA1.givenW<- SL.exposure$SL.predict
@@ -365,7 +395,7 @@ for (i in 1:n_bootstrap_samples){
   
   X_minus_bin_3_all_bin_3 <- X_minus_bin_3
   X_minus_bin_3_all_bin_3$cigsPerDay_bin_3 <- 1
-  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_3, SL.library=SL.library, family="binomial")
+  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_3, SL.library=SL.library, family="binomial")
   expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_3_all_bin_3)$pred
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_3==1), X=subset(X_minus_bin_3, select= -c(cigsPerDay_bin_3)),SL.library=SL.library, family="binomial")
   probA1.givenW<- SL.exposure$SL.predict
@@ -384,7 +414,7 @@ for (i in 1:n_bootstrap_samples){
   
   X_minus_bin_4_all_bin_4 <- X_minus_bin_4
   X_minus_bin_4_all_bin_4$cigsPerDay_bin_4 <- 1
-  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned$CHD==1), X=X_minus_bin_4, SL.library=SL.library, family="binomial")
+  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_4, SL.library=SL.library, family="binomial")
   expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_4_all_bin_4)$pred
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_4==1), X=subset(X_minus_bin_4, select= -c(cigsPerDay_bin_4)),SL.library=SL.library, family="binomial")
   probA1.givenW<- SL.exposure$SL.predict
@@ -410,7 +440,8 @@ for (i in 1:length(levels(fhs_binned$cigsPerDay))){
 
 }
 
-plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5))
+plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
+     main = "TMLE")
 points(average_treatment_effect_ci[,1],col='red',lty=2)
 points(average_treatment_effect_ci[,2],col='red',lty=2)
 
