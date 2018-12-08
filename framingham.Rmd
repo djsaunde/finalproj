@@ -89,7 +89,7 @@ There are no exclusion restrictions or assumptions about functional form.
 ## Step 2: Counterfactuals & Causal Parameter
 
 #### Causal Parameter
-$${\Psi^*}^{i}(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,2,3,4}$$
+$${\Psi^*}^{i}(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,2,3,4\}$$
 where $i$ represent the bin of cigarettes smoked per day. $Y_i$ denotes the counterfactual outcome (the ten-year development of cardiovascular disease), if possibly contrary to fact, a person's number of cigarettes smoked per day is within $i^{th}$ bin. 
 
 <!--#### G-Computation
@@ -207,6 +207,33 @@ fhs_binned <- subset(fhs_binned, select = -c(i))
 ## Step 4. Identifiability
 Is your target causal parameter identified under your initial causal model? If not, under what additional assumptions would it be identified? How plausible are these for your particular problem? Are there additional data or changes to your study design that would improve their plausibility?
 
+```{r}
+require(nnet)
+# table for positivity
+#table(fhs_binned[,c('age', 'education', 'bmi', 'gender','diabetes','cigsPerDay')])
+# check propensity scores
+
+# 2. propensity score
+prob.AW.reg<- multinom(cigsPerDay ~ age + education + bmi + gender + diabetes, data=fhs_binned)
+prob.1W <- predict(prob.AW.reg, type= "probs")
+# create an empty vector
+prob.AW <- rep(NA, 4211)
+# for bin1
+prob.AW[fhs_binned$cigsPerDay=="[0, 1)"] <- prob.1W[fhs_binned$cigsPerDay=="[0, 1)","[0, 1)"]
+# for bin2
+prob.AW[fhs_binned$cigsPerDay=="[1, 10)"] <- prob.1W[fhs_binned$cigsPerDay=="[1, 10)","[1, 10)"]
+# for bin3
+prob.AW[fhs_binned$cigsPerDay=="[10, 20)"] <- prob.1W[fhs_binned$cigsPerDay=="[10, 20)","[10, 20)"]
+# for bin34
+prob.AW[fhs_binned$cigsPerDay=="[20, 70)"] <- prob.1W[fhs_binned$cigsPerDay=="[20, 70)","[20, 70)"]
+
+# look at the distribution of predicted probabilities/pscore
+summary(prob.AW)[1:6]
+
+# use mean
+#meanlevel<- fhs_binned %>% summarise(group_by(age, education, bmi, gender,diabetes),
+#          mean=mean(cigsPerDay))
+```
 ## Step 5. Statistical Model and Estimand
 
 The target parameter of $\mathbb{P}_0$, which equals the causal parameter in the augmented causal model $\mathcal{M}^{**}$ is given by the G-Computation formula:
@@ -324,8 +351,6 @@ plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
      main = "IPTW")
 points(average_treatment_effect_ci[,1],col='red',lty=2)
 points(average_treatment_effect_ci[,2],col='red',lty=2)
-
-
 
 ```
 
