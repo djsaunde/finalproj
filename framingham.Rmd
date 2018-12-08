@@ -213,26 +213,27 @@ require(nnet)
 #table(fhs_binned[,c('age', 'education', 'bmi', 'gender','diabetes','cigsPerDay')])
 # check propensity scores
 
-# 2. propensity score
-prob.AW.reg<- multinom(cigsPerDay ~ age + education + bmi + gender + diabetes, data=fhs_binned)
-prob.1W <- predict(prob.AW.reg, type= "probs")
-# create an empty vector
-prob.AW <- rep(NA, 4211)
-# for bin1
-prob.AW[fhs_binned$cigsPerDay=="[0, 1)"] <- prob.1W[fhs_binned$cigsPerDay=="[0, 1)","[0, 1)"]
-# for bin2
-prob.AW[fhs_binned$cigsPerDay=="[1, 10)"] <- prob.1W[fhs_binned$cigsPerDay=="[1, 10)","[1, 10)"]
-# for bin3
-prob.AW[fhs_binned$cigsPerDay=="[10, 20)"] <- prob.1W[fhs_binned$cigsPerDay=="[10, 20)","[10, 20)"]
-# for bin34
-prob.AW[fhs_binned$cigsPerDay=="[20, 70)"] <- prob.1W[fhs_binned$cigsPerDay=="[20, 70)","[20, 70)"]
+## check
 
-# look at the distribution of predicted probabilities/pscore
-summary(prob.AW)[1:6]
+### BIN 1
+bin1ps <- glm( cigsPerDay_bin_1 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+ps1 <- predict(glm_fit_iptw_bin_1, type= "response")
+summary(ps1)
 
-# use mean
-#meanlevel<- fhs_binned %>% summarise(group_by(age, education, bmi, gender,diabetes),
-#          mean=mean(cigsPerDay))
+### BIN 2
+bin2ps <- glm( cigsPerDay_bin_2 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+ps2 <- predict(glm_fit_iptw_bin_2, type= "response")
+summary(ps2)
+
+### BIN 3
+bin3ps <- glm( cigsPerDay_bin_3 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+ps3 <- predict(glm_fit_iptw_bin_3, type= "response")
+summary(ps3)
+
+### BIN 4
+bin4ps <- glm( cigsPerDay_bin_4 ~   education + age + diabetes + bmi , data = fhs_binned, family = "binomial")
+ps4 <- predict(glm_fit_iptw_bin_4, type= "response")
+summary(ps4)
 ```
 ## Step 5. Statistical Model and Estimand
 
