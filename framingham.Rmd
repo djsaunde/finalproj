@@ -13,39 +13,25 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Data Exploration
-
-```{r}
+```{r,include=FALSE}
 fhs = read.csv('framingham.csv', header = T)
 head(fhs)
 ```
 
-```{r}
+```{r,include=FALSE}
 summary(fhs)
-```
-
-```{r}
 table(fhs$TenYearCHD)
-```
-
-```{r}
 table(fhs$currentSmoker)
-```
-
-```{r}
 table(fhs$cigsPerDay)
-```
-
-```{r}
 dim(fhs)
 ```
-
 # Causal Roadmap
 ## Background Story
 
-Cardiovascular disease (CVD) is the leading cause of death and serious illness in the United States. The objective of the Framingham Heart Study was to identify the common factors or characteristics that contribute to CVD by following its development over a long period of time in a large group of participants who had not yet developed overt symptoms of CVD or suffered a heart attack or stroke.
+Coronary heart disease (CHD) is the leading cause of death and serious illness in the United States. The Framingham Heart Study's objective was to identify the common factors or characteristics that contribute to CHD by following its development over time in a large group of participants who had not yet developed overt symptoms of CHD or suffered a heart attack or stroke.
 
-The researchers recruited 5,209 men and women between the ages of 30 and 62 from the town of Framingham, Massachusetts, and began the first round of extensive physical examinations and lifestyle interviews that they would later analyze for common patterns related to CVD development. Over the years, careful monitoring of the Framingham Study population has led to the identification of the major CVD risk factors – high blood pressure, high blood cholesterol, smoking, obesity, diabetes, and physical inactivity – as well as a great deal of valuable information on the effects of related factors such as blood triglyceride and HDL cholesterol levels, age, gender, and psychosocial issues. Although the Framingham cohort is primarily Caucasian, the importance of the major CVD risk factors identified in this group have been shown in other studies to apply almost universally among racial and ethnic groups, even though the patterns of distribution may vary from group to group.
+
+The researchers recruited 5,209 men and women between the ages of 30 and 70 from Framingham, Massachusetts, and began the first round of extensive physical examinations and lifestyle interviews that they would later analyze for common patterns related to CHD development. Over the years, careful monitoring of the Framingham Study population has led to the identification of the major CHD risk factors – high blood pressure, high blood cholesterol, smoking, obesity, diabetes, and physical inactivity. We are interested how the extent of smoking affects the development of CHD, specifically, it is not immediately obvious whether smoking 5 cigarettes per day affects the development of CHD differently than smoking 15 cigarettes per day does.
 
 ## Step 0: Specify the Scientific Question
 
@@ -53,15 +39,13 @@ What is the effect of smoking on the ten-year development of Coronary Heart Dise
 
 #### Target population 
 
-The target population is white middle-class men and women aged 30 to 62 in the US. 
+The target population is white middle-class men and women aged 30 to 70 in the US. 
 
 
-The sameple in this study is white middle-class men and women aged 30 to 62 (at baseline) in Framingham, Massachusetts. We are willing to generalize to the target population because it is reasonable to assume that SES and risk factors among the sample and the target population are adequately homogenous.
+The sameple in this study is white middle-class men and women aged 30 to 70 (at baseline) in Framingham, Massachusetts. The importance of the major CHD risk factors identified in this group have been shown in other studies to apply almost universally, even though the patterns of distribution may vary. Thus, we are willing to generalize to the target population.
 
 ## Step 1: Specify a Causal Model
-<!--Use a SCM to represent your knowledge (and its limits) about the
-system you will study. If you have uncertainty in specifying your SCM, discuss that explicitly and explain why you made the decisions you did.
-NW - below is just a place holder so we can edit later-->
+
 
 - Endogenous nodes: $X = (W,Z,A,Y)$, where 
 
@@ -106,9 +90,6 @@ $$IPTW^i = \frac{1}{n} \sum_{j}^n Y\frac{ \mathbb{I} (A \in i)}{P(A \in i | \mat
 #### Targeted Maximum Likelihood Estimate (TMLE)-->
 
 ## Step 3. Specify your observed data and its link to the causal model
-
-- Describe your observed data and its link to the causal model you have specified. If you feel that in reality the link between your causal model and the observed data is more complex than we have learned in class (n i.i.d. copies of random variable O), explain why. But for this project, stick with the simple link we have learned in class.
-
 
 The dataset is adapted from Framingham Heart Study. We assume that Gender, Age, Education, BMI, Diabetes Status, and Number of Cigarettes per Day ($A$) were collected in a questionnaire at baseline. Then, Prevalence of Stroke, Prevalence of Hypertension, Indication of Blood Pressure Medication, Total Cholesterol Level, Blood Pressure, and Heart Rate were all collected after the questionnaire at a doctor's office. Our outcome, Coronary Heart Disease, is collected at a 10-year follow up. Note that this is unlike the original study. We assume our observed data were generated by sampling $n$ from a system described by our structural causal model, so we have $n = 4211$ copies of $O\overset{i.i.d}\sim \mathbb{P}_O$. We place no restrictions on the statistical model $\mathcal{M}$, which is thereby non-parametric.
 
@@ -205,6 +186,7 @@ fhs_binned <- subset(fhs_binned, select = -c(i))
 ```
 
 ## Step 4. Identifiability
+
 Is your target causal parameter identified under your initial causal model? If not, under what additional assumptions would it be identified? How plausible are these for your particular problem? Are there additional data or changes to your study design that would improve their plausibility?
 
 ```{r}
