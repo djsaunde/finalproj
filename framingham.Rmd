@@ -25,13 +25,14 @@ table(fhs$currentSmoker)
 table(fhs$cigsPerDay)
 dim(fhs)
 ```
-# Causal Roadmap
-## Background Story
+# Background Story
 
 Coronary heart disease (CHD) is the leading cause of death and serious illness in the United States. The Framingham Heart Study's objective was to identify the common factors or characteristics that contribute to CHD by following its development over time in a large group of participants who had not yet developed overt symptoms of CHD or suffered a heart attack or stroke.
 
 
 The researchers recruited 5,209 men and women between the ages of 30 and 70 from Framingham, Massachusetts, and began the first round of extensive physical examinations and lifestyle interviews that they would later analyze for common patterns related to CHD development. Over the years, careful monitoring of the Framingham Study population has led to the identification of the major CHD risk factors – high blood pressure, high blood cholesterol, smoking, obesity, diabetes, and physical inactivity. We are interested how the extent of smoking affects the development of CHD, specifically, it is not immediately obvious whether smoking 5 cigarettes per day affects the development of CHD differently than smoking 15 cigarettes per day does.
+
+# Causal Roadmap
 
 ## Step 0: Specify the Scientific Question
 
@@ -69,6 +70,10 @@ $$
 
 There are no exclusion restrictions or assumptions about functional form.
 
+#### Causal Graph
+```{r fig1, fig.align='center',fig.cap="Causal Graph for the SCM", echo=FALSE, out.width='50%'}
+knitr::include_graphics("./dags/dag_causal.PNG")
+```
 
 ## Step 2: Counterfactuals & Causal Parameter
 
@@ -100,27 +105,28 @@ The dataset is adapted from Framingham Heart Study. We assume that Gender, Age, 
 \hline
 Variable Name & Covariate & Description \\ \hline
 male & Gender & binary: \ male = 1 \ female = 0 \\ \hline
-age & Age & ordinal: \ 32-38, 39-40, 41-43, 44-45, 46-48 \\
-& & 49-51, 52-54, 55-57, 58-61, 62-70 \\ \hline
+age & Age & ordinal: \ 32-41, 42-48, 49-55, 56-70 \\ \hline
 education & Education level & ordinal: \ 1 = some high school, 2 = high school/GED \\
-& & 3 = some college/vocational school, 4 = college \\ \hline
+& & 3 = some college/vocational school, 4 = college, 9 = NA \\ \hline
 currentSmoker & Current Smoking Status & binary: \ 1 = Yes \ 0 = No \\ \hline
-cigsPerDay & Number of cigarettes per day & ordinal: \ 0, 1-19, 20-70 \\ \hline
+cigsPerDay & Number of cigarettes per day & ordinal: \ 0, 1-9, 10-19, $\geq 20$ \\ \hline
 BPMeds & Indicator of blood pressure medication & binary: \ 1 = Yes \  0 = No \\ \hline
 prevalentStroke & Prevalence of Stroke & binary: \ 1 = Yes \ 0 = No \\ \hline
 prevalentHyp & Prevalence of Hypertension & binary: \ 1 = Yes \ 0 = No \\ \hline
 diabetes & Prevalence of Diabetes & binary: \ 1 = Yes \ 0 = No \\ \hline
-totChol & Total Cholesterol Level & ordinal: \ 0-79, 80-89, 90-600 \\ \hline
-sysBP & Systolic Blood Pressure & ordinal: \ 0-119, 120-139, 140-295 \\ \hline
-diaBP & Diastolic Blood Pressure & ordinal: \ 0-79, 80-89, 90-142.5  \\ \hline
-BMI & Body Mass Index & ordinal: \ 0-18.4, 18.5-24.9, 25-29.9, 30-56.8 \\ \hline
-heartRate & Heart Rate & ordinal: \ 0-59, 60 -143 \\ \hline
-glucose & Glucose Level & ordinal: \ 0-77, 78-394 \\ \hline
-TenYearCHD & Ten Year Follow-Up Prevalence & binary: \ 1 = Yes (had CHD) \\
+totChol & Total Cholesterol Level$*$ & ordinal: \ Good ($\leq 200$),  Borderline $= 200-239$ \\
+& & High $ \geq 240$ \\ \hline
+BP & Systolic and Diastolic Blood Pressure & binary: \ <120/80 = 0, Otherwise = 1  \\ \hline
+BMI & Body Mass Index$**$ & ordinal: \ $<18.5$ = 1, 18.5-24.9 = 2, $\ge$25 = 3, NA = 9 \\ \hline
+heartRate & Heart Rate & binary: \ Low $\leq60$, High $\geq 60$ \\ \hline
+glucose & Glucose Level & binary: \ 0-77, 78-394 \\ \hline
+TenYearCHD & Ten Year Follow-Up Prevalence & binary: \ 1 = Yes (had CHD) \\ 
 & & 0 = No (do not have CHD) \\ \hline
 \end{tabular}
 \end{table}
 
+$*$binned based on National Heart, Lung, and Blood Institute (NHLBI) guidelines
+$**$binned based on WHO guidelines
 
 ```{r, include = FALSE}
 library(dplyr)
@@ -187,9 +193,26 @@ fhs_binned <- subset(fhs_binned, select = -c(i))
 
 ## Step 4. Identifiability
 
-Is your target causal parameter identified under your initial causal model? If not, under what additional assumptions would it be identified? How plausible are these for your particular problem? Are there additional data or changes to your study design that would improve their plausibility?
+Since we made no independence assumptions on our exogenous background factors, we will need to make additional independence assumptions for identifiability. For the target causal parameter in the SCM $\mathcal{M^*}$ to be identified from the observed data distribution, we need to make a randomization and a positivity assumption. 
 
-```{r}
+
+#### 1) Randomization Assumption:
+
+Conditional on $W$, the counterfactual outcome is independent of the observed treatment: 
+$$ Y \perp  A|W$$
+```{r figc, fig.align='center',fig.cap="Causal Graph for the SCM", echo=FALSE,out.width='50%'}
+knitr::include_graphics("./dags/augmented_dag.PNG")
+```
+$$U_A\perp U_Y,U_A\perp U_W,U_A\perp U_Z$$
+
+In this augmented/working SCM ($\mathcal{M^{**}}$), the unmeasured background factor of $A$ (cigarettes smoked per day) is independent of the unmeasured background factor of $Y$ (10yr CHD), the unmeasured background factor of $W$ (baseline age, gender, education, diabetes, BMI), and the unmeasured background factor of $Z$ (prevalence of stroke, hypertension, blood pressure, blood pressure medication, heart rate).
+
+Since $W$,$Z$, and $Y$ include SES and biological factors that affect human health, we aviod assuming independence between their unmeasured background factors. Thus, we consider it is more plausible to make the indepedence assumptions listed. We do not the mediator $Z$ to avoid opening a backdoor path. Under $M^**$, the backdoor criterion holds conditional on $W$. Additional data on factors that affect heath status and determinants could help with identifiability, but those factors are not well-understood. 
+
+#### 2) Positivity Assumption:
+
+There must be a positive probability of each treatment condition within each possible strata of $W$.  we need a positive probability of cigarettes smoked per day for each strata of $W$.
+```{r,include=FALSE,eval=FALSE}
 require(nnet)
 # table for positivity
 #table(fhs_binned[,c('age', 'education', 'bmi', 'gender','diabetes','cigsPerDay')])
@@ -217,6 +240,53 @@ bin4ps <- glm( cigsPerDay_bin_4 ~   education + age + diabetes + bmi , data = fh
 ps4 <- predict(glm_fit_iptw_bin_4, type= "response")
 summary(ps4)
 ```
+
+$$
+\begin{aligned}
+min_{i\in A}\mathbb{P}_0(A=i|W=w)>0\\
+\text{for all}\ w \ \text{for which} 
+\mathbb{P}_0(W = w) \geq 0
+\end{aligned}
+$$
+where $i$ denote the index of a bin of $A$.
+
+
+We are concerned about a positivity assumption violation for a bin with high numbers of cigarettes smoked per day since certain strata of $W$ might not smoke at all, and binning could make particular stratas have low probabilities of smoking certain numbers of cigarettes per day. We can informally check for a positivity assumption violation from tables of $A$ given a strata of $W$. One table from a strata of $W$ is shown below:
+
+\begin{table}[ht]
+\centering
+\caption{Table for BMI = [18.5, 25), Gender = 0, Diabetes = 0, A = 0 }
+\small
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Strata & Education: 1 & Education: 2 & Education: 3 & Education: 4 & Education: NA \\ \hline
+Age: [32, 42) & 26 & 60 & 32 & 12 &  1 \\ \hline
+Age: [42, 49) & 40 & 42 & 41 & 18 &  0 \\ \hline
+Age: [49, 56) & 43 & 52 & 42 & 17 &  5  \\ \hline
+Age: [56, 70] & 75 & 41 & 36 & 16 &  2  \\ \hline
+\end{tabular}
+\end{table} 
+
+From the table above, we can see that we have 0 female whose BMI is in the range [18.5, 25), age is in the range of [42, 49), education level is missing, who does not have Diabetes, who does not smoke cigarettes. Thus, we have a sparsity issue. 
+
+We also calculated the predicted probability of each bin of $A$ (the number of cigarettes smoked per day) given a strata of $W$:
+
+\begin{table}[ht]
+\centering
+\caption{Predicted Probability}
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+Binned $A$& Min & Mean & Max \\ \hline
+0 Cig Per Day & 0.44 &  0.70 & 0.93  \\ \hline
+1-9 Cigs Per Day & 0.04 &  0.17 & 0.42  \\ \hline
+10-19 Cigs Per Day & 0.03 &  0.13 & 0.24  \\ \hline
+$\geq 20$ Cigs Per Day & 0.00 &  0.00 & 0.00  \\ \hline
+\end{tabular}
+\end{table} 
+
+From the table, we can see that the probabiliy of falling into the last bin of $A$, which is $\geq 20$ cigarettes smoked per day, is very close to zero, indicating a practical violation of positivity assumption. Theoretically, randomizing the number of cigarettes smoked per day could help with identifiability, but it is not feasible.
+
 ## Step 5. Statistical Model and Estimand
 
 The target parameter of $\mathbb{P}_0$, which equals the causal parameter in the augmented causal model $\mathcal{M}^{**}$ is given by the G-Computation formula:
@@ -469,3 +539,75 @@ mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[0, 1)" & fhs_binned$age ==
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[1, 10)" & fhs_binned$age == "[56, 70]",]$CHD)-1)
 
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[10, 20)" & fhs_binned$age == "[56, 70]",]$CHD)-1)
+```
+
+## Team Member Contribution
+<!-- Feel free to add more tasks for switch things around here, these are placeholders!-->
+
+Michael Attah
+\begin{itemize}
+\item Causal graph
+\item Causal question
+\item Estimation...
+\item Interpretation?
+\item etc
+\end{itemize}
+
+Bianca Doone
+\begin{itemize}
+
+\item Bootstrap confidence interval
+\item Data Retrieval 
+\item Causal graph
+\item Causal question
+\item  Causal Parameter
+\item  Specify observed data and link to SCM
+\item Descriptive table
+\item etc
+
+\end{itemize}
+
+Casey Graham
+
+\begin{itemize}
+\item  Categorize covariates 
+\item  Causal Parameter
+\item  Conditional mean outcome
+\item  IPTW
+\item  Superlearner/TMLE
+\item  Causal graph
+\item  Causal question
+\item  Statistical Estimand: G-comp
+\item  etc
+
+\end{itemize}
+
+Daniel Saunders
+
+\begin{itemize}
+\item  Data exploration
+\item  Estimation...
+\item  Interpretation?
+\item  Causal graph
+\item  Causal question
+\item  etc
+
+\end{itemize}
+
+Nutcha Wattanachit
+\begin{itemize}
+\item  Background story 
+\item  Descriptive table
+\item  Causal graph
+\item  Causal question
+\item  Causal Parameter
+\item  Specify observed data and link to SCM
+\item  Identifiability: Randomization assumption
+\item  Identifiability: Positivity assumption
+\item  Statistical Estimand: G-comp
+
+\end{itemize}
+
+## References
+
+Boston University & the National Heart, Lung, & Blood Institute, Framingham Heart Study. 5 Dec. 2018: https://www.framinghamheartstudy.org
