@@ -88,7 +88,7 @@ The dataset is adapted from Framingham Heart Study. We assume that Gender, Age, 
 library(dplyr)
 
 ### REMOVE EXPOSURE AND OUTCOME NA
-fhs <- fhs %>%  filter(!is.na(cigsPerDay),!is.na(TenYearCHD))
+fhs_complete_cases <- fhs %>%  filter(!is.na(cigsPerDay),!is.na(TenYearCHD),!is.na(age),!is.na(education),!is.na(male))
 
 ```
 
@@ -97,52 +97,50 @@ fhs <- fhs %>%  filter(!is.na(cigsPerDay),!is.na(TenYearCHD))
 library(mltools)
 
 ## initalize empty binned dataframe 
-fhs_binned <- data.frame(i=1:nrow(fhs))
+fhs_binned <- data.frame(i=1:nrow(fhs_complete_cases))
 
 ## cigsPerDay
-fhs_binned$cigsPerDay <-bin_data(fhs$cigsPerDay,bins=c(0,1,10,20,max(fhs$cigsPerDay)), binType = "explicit")
+fhs_binned$cigsPerDay <-bin_data(fhs_complete_cases$cigsPerDay,bins=c(0,1,10,20,max(fhs_complete_cases$cigsPerDay)), binType = "explicit")
 
 ## diabetes
-fhs_binned$diabetes <- as.factor(fhs$diabetes)
+fhs_binned$diabetes <- as.factor(fhs_complete_cases$diabetes)
 
 ## Stroke
-fhs_binned$prevalentStroke <- as.factor(fhs$prevalentStroke)
+fhs_binned$prevalentStroke <- as.factor(fhs_complete_cases$prevalentStroke)
 
 ## Hypertension
-fhs_binned$prevalentHyp <- as.factor(fhs$prevalentHyp)
+fhs_binned$prevalentHyp <- as.factor(fhs_complete_cases$prevalentHyp)
 
 
 # Variables binned based on science!
 ## age
-fhs_binned$age  <- bin_data(fhs$age, bins=4, binType = "quantile")
+fhs_binned$age  <- bin_data(fhs_complete_cases$age, bins=4, binType = "quantile")
 
 ## education NA fix
-fhs[is.na(fhs$education),]$education <- 9
-fhs_binned$education  <- (fhs$education)
+fhs_binned$education  <- (fhs_complete_cases$education)
 
 ## making 1 BP var
-fhs_binned$BP <- as.factor(ifelse(fhs$sysBP/fhs$diaBP < 128/80,0,1))
+fhs_binned$BP <- as.factor(ifelse(fhs_complete_cases$sysBP/fhs_complete_cases$diaBP < 128/80,0,1))
 
 ## total cholesterol
-fhs_binned$totChol  <- bin_data(fhs$totChol, bins=c(0,200,240,max(fhs$totChol, na.rm = T)), binType = "explicit")
+fhs_binned$totChol  <- bin_data(fhs_complete_cases$totChol, bins=c(0,200,240,max(fhs_complete_cases$totChol, na.rm = T)), binType = "explicit")
 
 ## gender
-fhs_binned$gender  <-factor(fhs$male)
+fhs_binned$gender  <-factor(fhs_complete_cases$male)
 
 ## BMI NA fix
-fhs[is.na(fhs$BMI),]$BMI <- 9
-fhs_binned$bmi  <- bin_data(fhs$BMI, bins=c(0,18.5,25,30,max(fhs$BMI, na.rm = T)), binType = "explicit")
+fhs_binned$bmi  <- bin_data(fhs_complete_cases$BMI, bins=c(0,18.5,25,30,max(fhs$BMI, na.rm = T)), binType = "explicit")
 
 ## technically don't need this...
-fhs_binned$glucose  <- bin_data(fhs$glucose, bins=c(0,78,max(fhs$glucose, na.rm = T)), binType = "explicit")
+fhs_binned$glucose  <- bin_data(fhs_complete_cases$glucose, bins=c(0,78,max(fhs$glucose, na.rm = T)), binType = "explicit")
 
 ## heart rate
-fhs_binned$heartRate  <- bin_data(fhs$heartRate, 
-                                  bins=c(0,60,max(fhs$heartRate, na.rm = T)), 
+fhs_binned$heartRate  <- bin_data(fhs_complete_cases$heartRate, 
+                                  bins=c(0,60,max(fhs_complete_cases$heartRate, na.rm = T)), 
                                   binType = "explicit")
 
 ## CHD
-fhs_binned$CHD <- factor(fhs$TenYearCHD)
+fhs_binned$CHD <- factor(fhs_complete_cases$TenYearCHD)
 
 ## remove index created 
 fhs_binned <- subset(fhs_binned, select = -c(i))
@@ -296,8 +294,11 @@ for(i in 1:n_bootstrap_samples){
   fhs_binned_i$cigsPerDay <-levels(fhs_binned_sample$cigsPerDay)[i]
   return (fhs_binned_i)
 }
+
+
   
-glm_fit <- glm( CHD ~ cigsPerDay + education + age + gender, data = fhs_binned_sample, family = "binomial")
+## SATURED REGRESSION MODEL FOR NPMLE
+glm_fit <- glm( CHD ~ cigsPerDay*education*age*gender, data = fhs_binned_sample, family = "binomial")
 
 for (j in 1:length(levels(fhs_binned$cigsPerDay))){
   conMean_bootstrap[i,j] <- mean(predict(glm_fit, newdata=intervene_on_bin(j), type='response'))
@@ -313,7 +314,7 @@ for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
 }
 
 plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
-     main = "Conditional Mean")
+     main = "Simple Substitution")
 points(average_treatment_effect_ci[,1],col='red',lty=2)
 points(average_treatment_effect_ci[,2],col='red',lty=2)
 ```
@@ -374,6 +375,11 @@ plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
 points(average_treatment_effect_ci[,1],col='red',lty=2)
 points(average_treatment_effect_ci[,2],col='red',lty=2)
 
+
+hist(wt_1,xlab="Weights of bin 1")
+hist(wt_2,xlab="Weights of bin 2")
+hist(wt_3,xlab="Weights of bin 3")
+hist(wt_4,xlab="Weights of bin 4")
 ```
 
 
@@ -382,10 +388,10 @@ points(average_treatment_effect_ci[,2],col='red',lty=2)
 ```{r}
 
 library('SuperLearner')
-SL.library<- c("SL.glmnet","SL.randomForest","SL.nnet","SL.earth","SL.bayesglm")#,"SL.earth")
+SL.library<- c("SL.glmnet","SL.randomForest","SL.nnet","SL.earth","SL.bayesglm")
 
-n_bootstrap_samples <-10
-tmle_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
+n_bootstrap_samples <-100
+tmle_bootstrap_bin_1 <- c()
 
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
@@ -411,10 +417,17 @@ for (i in 1:n_bootstrap_samples){
   epsilon<- logitUpdate$coef
   expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
   PsiHat.TMLE_bin_1<- mean(expY.givenAW.star)#- expY.given0W.star)
-  
-  
+  tmle_bootstrap_bin_1[i] <- PsiHat.TMLE_bin_1
+}
+```
+
+
+```{r}
   #### BIN 2 TMLE
-  
+
+tmle_bootstrap_bin_2 <- c()
+for (i in 1:n_bootstrap_samples){
+  set.seed(i)
   X_minus_bin_2<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_2", "education", "age","gender") )
   X_minus_bin_2$age <- as.numeric(X_minus_bin_2$age)
   X_minus_bin_2_all_bin_2 <- X_minus_bin_2
@@ -429,9 +442,15 @@ for (i in 1:n_bootstrap_samples){
   epsilon<- logitUpdate$coef
   expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
   PsiHat.TMLE_bin_2<- mean(expY.givenAW.star)#- expY.given0W.star)
-  
-  
-  
+  tmle_bootstrap_bin_2[i] <- PsiHat.TMLE_bin_2
+}
+```
+
+
+```{r}
+
+tmle_bootstrap_bin_3 <- c()
+for (i in 1:n_bootstrap_samples){
   #### BIN 3 TMLE 
   
   X_minus_bin_3<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_3", "education", "age","gender") )
@@ -448,10 +467,15 @@ for (i in 1:n_bootstrap_samples){
   epsilon<- logitUpdate$coef
   expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
   PsiHat.TMLE_bin_3 <- mean(expY.givenAW.star)
+  tmle_bootstrap_bin_3[i] <- PsiHat.TMLE_bin_3
+```
   
   
+```{r}
   #### BIN 4  TMLE 
-  
+tmle_bootstrap_bin_4 <- c()
+for (i in 1:n_bootstrap_samples){
+
   X_minus_bin_4<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_4", "education", "age","gender") )
   X_minus_bin_4$age <- as.numeric(X_minus_bin_4$age)
   
@@ -466,9 +490,7 @@ for (i in 1:n_bootstrap_samples){
   epsilon<- logitUpdate$coef
   expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
   PsiHat.TMLE_bin_4 <- mean(expY.givenAW.star)
-  
-  
-  tmle_bootstrap[i,] <- c(PsiHat.TMLE_bin_1,PsiHat.TMLE_bin_2,PsiHat.TMLE_bin_3,PsiHat.TMLE_bin_4)
+  tmle_bootstrap_bin_4[i] <- PsiHat.TMLE_bin_4
 }
 ```
 
