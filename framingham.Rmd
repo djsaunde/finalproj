@@ -510,10 +510,12 @@ mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[1, 10)" & fhs_binned$age =
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[10, 20)" & fhs_binned$age == "[56, 70]",]$CHD)-1)
 ```
 
+\newpage
+
 ## Team Member Contribution
 <!-- Feel free to add more tasks for switch things around here, these are placeholders!-->
 
-Michael Attah
+### Michael Attah
 \begin{itemize}
 \item Causal graph
 \item Causal question
@@ -522,7 +524,7 @@ Michael Attah
 \item etc
 \end{itemize}
 
-Bianca Doone
+### Bianca Doone
 \begin{itemize}
 
 \item Bootstrap confidence interval
@@ -536,7 +538,7 @@ Bianca Doone
 
 \end{itemize}
 
-Casey Graham
+### Casey Graham
 
 \begin{itemize}
 \item  Categorize covariates 
@@ -551,7 +553,7 @@ Casey Graham
 
 \end{itemize}
 
-Daniel Saunders
+### Daniel Saunders
 
 \begin{itemize}
 \item  Data exploration
@@ -563,7 +565,7 @@ Daniel Saunders
 
 \end{itemize}
 
-Nutcha Wattanachit
+### Nutcha Wattanachit
 \begin{itemize}
 \item  Background story 
 \item  Descriptive table
@@ -576,6 +578,7 @@ Nutcha Wattanachit
 \item  Statistical Estimand: G-comp
 
 \end{itemize}
+
 
 ## References
 
