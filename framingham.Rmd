@@ -379,6 +379,11 @@ plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
 points(average_treatment_effect_ci[,1],col='red',lty=2)
 points(average_treatment_effect_ci[,2],col='red',lty=2)
 
+
+hist(wt_1,xlab="Weights of bin 1")
+hist(wt_2,xlab="Weights of bin 2")
+hist(wt_3,xlab="Weights of bin 3")
+hist(wt_4,xlab="Weights of bin 4")
 ```
 
 
