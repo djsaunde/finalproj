@@ -454,6 +454,7 @@ for (i in 1:n_bootstrap_samples){
 ```{r}
 
 tmle_bootstrap_bin_3 <- c()
+
 for (i in 1:n_bootstrap_samples){
   #### BIN 3 TMLE 
   
@@ -472,6 +473,7 @@ for (i in 1:n_bootstrap_samples){
   expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
   PsiHat.TMLE_bin_3 <- mean(expY.givenAW.star)
   tmle_bootstrap_bin_3[i] <- PsiHat.TMLE_bin_3
+}
 ```
   
   
