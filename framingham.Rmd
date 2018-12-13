@@ -29,7 +29,6 @@ dim(fhs)
 
 Coronary heart disease (CHD) is the leading cause of death and serious illness in the United States. The Framingham Heart Study's objective was to identify the common factors or characteristics that contribute to CHD by following its development over time in a large group of participants who had not yet developed overt symptoms of CHD or suffered a heart attack or stroke.
 
-
 The researchers recruited 5,209 men and women between the ages of 30 and 70 from Framingham, Massachusetts, and began the first round of extensive physical examinations and lifestyle interviews that they would later analyze for common patterns related to CHD development. Over the years, careful monitoring of the Framingham Study population has led to the identification of the major CHD risk factors – high blood pressure, high blood cholesterol, smoking, obesity, diabetes, and physical inactivity. We are interested how the extent of smoking affects the development of CHD, specifically, it is not immediately obvious whether smoking 5 cigarettes per day affects the development of CHD differently than smoking 15 cigarettes per day does.
 
 # Causal Roadmap
@@ -41,7 +40,6 @@ What is the effect of smoking on the ten-year development of Coronary Heart Dise
 #### Target population 
 
 The target population is white middle-class men and women aged 30 to 70 in the US. 
-
 
 The sameple in this study is white middle-class men and women aged 30 to 70 (at baseline) in Framingham, Massachusetts. The importance of the major CHD risk factors identified in this group have been shown in other studies to apply almost universally, even though the patterns of distribution may vary. Thus, we are willing to generalize to the target population.
 
@@ -60,10 +58,10 @@ The sameple in this study is white middle-class men and women aged 30 to 70 (at 
 - Structural equations $F$:
 $$
 \begin{aligned}
-W1 &\leftarrow  f_{W}(U_{W})\\
-Z &\leftarrow  f_{Z}(W,A,U_{Z})\\
-A  &\leftarrow f_A(W,U_A)\\
-Y  &\leftarrow f_Y(W,Z,A,U_Y)\\
+W &\leftarrow  f_W (U_W) \\
+Z  &\leftarrow  f_Z (W, A, U_Z) \\
+A  &\leftarrow  f_A (W, U_A) \\
+Y  &\leftarrow  f_Y (W, Z, A, U_Y) \\
 \end{aligned}
 $$
 
@@ -222,8 +220,6 @@ ps4sum = summary(ps4)
 full_sum = rbind.data.frame(ps1sum,ps2sum,ps3sum,ps4sum)
 
 row.names(full_sum) = c("i=1", "i=2", "i=3", "i=4")
-
-
 ```
 
 $$
