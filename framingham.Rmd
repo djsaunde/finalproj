@@ -189,7 +189,7 @@ Since $W$,$Z$, and $Y$ include SES and biological factors that affect human heal
 #### 2) Positivity Assumption:
 
 There must be a positive probability of each treatment condition within each possible strata of $W$. We need a positive probability of cigarettes smoked per day for each strata of $W$.
-```{r,include=FALSE,eval=FALSE}
+```{r,include=FALSE}
 require(nnet)
 # table for positivity
 #table(fhs_binned[,c('age', 'education', 'gender','cigsPerDay')])
