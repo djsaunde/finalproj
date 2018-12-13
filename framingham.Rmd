@@ -188,36 +188,44 @@ Since $W$,$Z$, and $Y$ include SES and biological factors that affect human heal
 
 #### 2) Positivity Assumption:
 
-There must be a positive probability of each treatment condition within each possible strata of $W$.  we need a positive probability of cigarettes smoked per day for each strata of $W$.
+There must be a positive probability of each treatment condition within each possible strata of $W$. We need a positive probability of cigarettes smoked per day for each strata of $W$.
 ```{r,include=FALSE,eval=FALSE}
 require(nnet)
 # table for positivity
-#table(fhs_binned[,c('age', 'education', 'bmi', 'gender','diabetes','cigsPerDay')])
+#table(fhs_binned[,c('age', 'education', 'gender','cigsPerDay')])
 # check propensity scores
 
-## check
-
-### @CASEY OR NUTCHA NEED TO FIX
+### Create pairwise binary variables for each bin
+fhs_binned$cigsPerDay_bin_1 <- ifelse(fhs_binned$cigsPerDay == "[0, 1)",1,0)
+fhs_binned$cigsPerDay_bin_2 <- ifelse(fhs_binned$cigsPerDay == "[1, 10)",1,0)
+fhs_binned$cigsPerDay_bin_3 <- ifelse(fhs_binned$cigsPerDay == "[10, 20)",1,0)
+fhs_binned$cigsPerDay_bin_4 <- ifelse(fhs_binned$cigsPerDay == "[20, 70]",1,0)
 
 ### BIN 1
 bin1ps <- glm( cigsPerDay_bin_1 ~  gender + education + age, data = fhs_binned, family = "binomial")
-ps1 <- predict(glm_fit_iptw_bin_1, type= "response")
-summary(ps1)
+ps1 <- predict(bin1ps, type= "response")
+ps1sum = summary(ps1)
 
 ### BIN 2
 bin2ps <- glm( cigsPerDay_bin_2 ~  gender + education + age, data = fhs_binned, family = "binomial")
-ps2 <- predict(glm_fit_iptw_bin_2, type= "response")
-summary(ps2)
+ps2 <- predict(bin2ps, type= "response")
+ps2sum = summary(ps2)
 
 ### BIN 3
 bin3ps <- glm( cigsPerDay_bin_3 ~ gender + education + age, data = fhs_binned, family = "binomial")
-ps3 <- predict(glm_fit_iptw_bin_3, type= "response")
-summary(ps3)
+ps3 <- predict(bin3ps, type= "response")
+ps3sum = summary(ps3)
 
 ### BIN 4
 bin4ps <- glm( cigsPerDay_bin_4 ~  gender + education + age, data = fhs_binned, family = "binomial")
-ps4 <- predict(glm_fit_iptw_bin_4, type= "response")
-summary(ps4)
+ps4 <- predict(bin4ps, type= "response")
+ps4sum = summary(ps4)
+
+full_sum = rbind.data.frame(ps1sum,ps2sum,ps3sum,ps4sum)
+
+row.names(full_sum) = c("i=1", "i=2", "i=3", "i=4")
+
+
 ```
 
 $$
@@ -229,7 +237,7 @@ min_{i\in A}\mathbb{P}_0(A=i|W=w)>0\\
 $$
 where $i$ denote the index of a bin of $A$.
 
-# THIS NEEDS TO BE FIXED
+# THIS NEEDS TO BE FIXED!!!!
 
 We are concerned about a positivity assumption violation for a bin with high numbers of cigarettes smoked per day since certain strata of $W$ might not smoke at all, and binning could make particular stratas have low probabilities of smoking certain numbers of cigarettes per day. We can informally check for a positivity assumption violation from tables of $A$ given a strata of $W$. One table from a strata of $W$ is shown below:
 
@@ -249,21 +257,14 @@ Age: [56, 70] & 75 & 41 & 36 & 16 &  2  \\ \hline
 
 From the table above, we can see that we have 0 female whose BMI is in the range [18.5, 25), age is in the range of [42, 49), education level is missing, who does not have Diabetes, who does not smoke cigarettes. Thus, we have a sparsity issue. 
 
+# NEED TO FIX ABOVE!!!!
+
 We also calculated the predicted probability of each bin of $A$ (the number of cigarettes smoked per day) given a strata of $W$:
 
-\begin{table}[ht]
-\centering
-\caption{Predicted Probability}
-\small
-\begin{tabular}{|l|l|l|l|}
-\hline
-Binned $A$& Min & Mean & Max \\ \hline
-0 Cig Per Day & 0.44 &  0.70 & 0.93  \\ \hline
-1-9 Cigs Per Day & 0.04 &  0.17 & 0.42  \\ \hline
-10-19 Cigs Per Day & 0.03 &  0.13 & 0.24  \\ \hline
-$\geq 20$ Cigs Per Day & 0.00 &  0.00 & 0.00  \\ \hline
-\end{tabular}
-\end{table} 
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+kable(full_sum, caption = "Predicted Probabilities of CHD for each Strata of W")
+```
+
 
 From the table, we can see that the probabiliy of falling into the last bin of $A$, which is $\geq 20$ cigarettes smoked per day, is very close to zero, indicating a practical violation of positivity assumption. Theoretically, randomizing the number of cigarettes smoked per day could help with identifiability, but it is not feasible.
 
@@ -323,12 +324,6 @@ points(average_treatment_effect_ci[,2],col='red',lty=2)
 
 ### IPTW
 ```{r}
-
-### Create pairwise binary variables for each bin
-fhs_binned$cigsPerDay_bin_1 <- ifelse(fhs_binned$cigsPerDay == "[0, 1)",1,0)
-fhs_binned$cigsPerDay_bin_2 <- ifelse(fhs_binned$cigsPerDay == "[1, 10)",1,0)
-fhs_binned$cigsPerDay_bin_3 <- ifelse(fhs_binned$cigsPerDay == "[10, 20)",1,0)
-fhs_binned$cigsPerDay_bin_4 <- ifelse(fhs_binned$cigsPerDay == "[20, 70]",1,0)
 
 n_bootstrap_samples <-10
 iptw_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
