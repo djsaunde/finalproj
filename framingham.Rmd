@@ -44,8 +44,7 @@ The target population is white middle-class men and women aged 30 to 70 in the U
 The sameple in this study is white middle-class men and women aged 30 to 70 (at baseline) in Framingham, Massachusetts. The importance of the major CHD risk factors identified in this group have been shown in other studies to apply almost universally, even though the patterns of distribution may vary. Thus, we are willing to generalize to the target population.
 
 ## Step 1: Specify a Causal Model
-
-
++
 - Endogenous nodes: $X = (W,Z,A,Y)$, where 
 
 - $W$ is age, gender,  education
@@ -89,7 +88,6 @@ library(dplyr)
 
 ### REMOVE EXPOSURE AND OUTCOME NA
 fhs_complete_cases <- fhs %>%  filter(!is.na(cigsPerDay),!is.na(TenYearCHD),!is.na(age),!is.na(education),!is.na(male))
-
 ```
 
 
@@ -110,7 +108,6 @@ fhs_binned$prevalentStroke <- as.factor(fhs_complete_cases$prevalentStroke)
 
 ## Hypertension
 fhs_binned$prevalentHyp <- as.factor(fhs_complete_cases$prevalentHyp)
-
 
 # Variables binned based on science!
 ## age
@@ -162,11 +159,9 @@ colnames(table1) = c("Level","[0,1)", "[1,10)", "[10,19)", "[20,70]", "p")
 kable(table1, caption = "Number of Observations in Each Bin")
 ```
 
-
 ## Step 4. Identifiability
 
 Since we made no independence assumptions on our exogenous background factors, we will need to make additional independence assumptions for identifiability. For the target causal parameter in the SCM $\mathcal{M^*}$ to be identified from the observed data distribution, we need to make a randomization and a positivity assumption. 
-
 
 #### 1) Randomization Assumption:
 
@@ -259,8 +254,7 @@ We also calculated the predicted probability of each bin of $A$ (the number of c
 kable(full_sum, caption = "Predicted Probabilities of CHD for each Strata of W")
 ```
 
-
-From the table, we can see that the probabiliy of falling into the last bin of $A$, which is $\geq 20$ cigarettes smoked per day, is very close to zero, indicating a practical violation of positivity assumption. Theoretically, randomizing the number of cigarettes smoked per day could help with identifiability, but it is not feasible.
+From the table, we can see that the probability of falling into the last bin of $A$, which is $\geq 20$ cigarettes smoked per day, is very close to zero, indicating a practical violation of positivity assumption. Theoretically, randomizing the number of cigarettes smoked per day could help with identifiability, but it is not feasible.
 
 ## Step 5. Statistical Model and Estimand
 
@@ -312,8 +306,6 @@ for(i in 1:n_bootstrap_samples){
   return (fhs_binned_i)
 }
 
-
-  
 ## SATURED REGRESSION MODEL FOR NPMLE
 glm_fit <- glm( CHD ~ cigsPerDay*education*age*gender, data = fhs_binned_sample, family = "binomial")
 
@@ -338,13 +330,11 @@ points(average_treatment_effect_ci[,2],col='red',lty=2)
 
 ### IPTW
 ```{r}
-
 n_bootstrap_samples <-10
 iptw_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 iptw_HT_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 
 iptw_ic <- c()
-
 
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
@@ -396,8 +386,6 @@ iptw_ic[4] <- var(wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.nume
 
 IPTW_bin_4_HT<- mean( wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.numeric(fhs_binned_sample$CHD==1))/mean( wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1))
 
-
-
 iptw_bootstrap[i,] = c(IPTW_bin_1, IPTW_bin_2, IPTW_bin_3, IPTW_bin_4)
 iptw_HT_bootstrap[i,] = c(IPTW_bin_1_HT, IPTW_bin_2_HT, IPTW_bin_3_HT, IPTW_bin_4_HT)
 
@@ -416,7 +404,6 @@ plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
 points(average_treatment_effect_ci[,1],col='red',lty=2)
 points(average_treatment_effect_ci[,2],col='red',lty=2)
 
-
 hist(wt_1,xlab="Weights of bin 1")
 hist(wt_2,xlab="Weights of bin 2")
 hist(wt_3,xlab="Weights of bin 3")
@@ -427,7 +414,6 @@ hist(wt_4,xlab="Weights of bin 4")
 ### Superlearner/TMLE
 
 ```{r}
-
 library('SuperLearner')
 SL.library<- c("SL.glmnet","SL.randomForest","SL.nnet","SL.earth")
 
@@ -453,7 +439,6 @@ for (i in 1:n_bootstrap_samples){
   expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_1_all_bin_1)$pred
   expY.givenAW <-  predict(SL.outcome)$pred
 
-  
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_1==1), X=subset(X_minus_bin_1, select= -c(cigsPerDay_bin_1)),SL.library=SL.library, family="binomial")
   probA1.givenW<- SL.exposure$SL.predict
   H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_1==1)/probA1.givenW
@@ -496,7 +481,6 @@ for (i in 1:n_bootstrap_samples){
 
 
 ```{r}
-
 tmle_bootstrap_bin_3 <- c()
 
 for (i in 1:n_bootstrap_samples){
