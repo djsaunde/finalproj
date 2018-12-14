@@ -180,6 +180,7 @@ Since $W$,$Z$, and $Y$ include SES and biological factors that affect human heal
 #### 2) Positivity Assumption:
 
 There must be a positive probability of each treatment condition within each possible strata of $W$. We need a positive probability of cigarettes smoked per day for each strata of $W$.
+
 ```{r,include=FALSE}
 require(nnet)
 # table for positivity
@@ -224,6 +225,7 @@ min_{i\in A}\mathbb{P}_0(A=i|W=w)>0\\
 \mathbb{P}_0(W = w) \geq 0
 \end{aligned}
 $$
+
 where $i$ denote the index of a bin of $A$.
 
 # THIS NEEDS TO BE FIXED!!!!
@@ -273,18 +275,45 @@ $$
 
 ### Classical Model Based on Chi Squared
 ```{r}
-logit2prob <- function(logit){
-  odds <- exp(logit)
-  prob <- odds / (1 + odds)
-  return(prob)
-}
-glm_fit <- glm( CHD ~ factor(cigsPerDay) + education + age + gender, data = fhs_binned_sample, family = "binomial")
-traditional_estimate_bin_1 <- logit2prob(glm_fit$coefficients[1])
-traditional_estimate_bin_2 <- logit2prob(glm_fit$coefficients[1] +glm_fit$coefficients[2])
+glm_fit <- glm(CHD ~ factor(cigsPerDay) + education + age + gender + bmi + totChol+prevalentStroke+prevalentHyp+BP+diabetes, data = fhs_binned, family = "binomial")
 
-traditional_estimate_bin_3 <- logit2prob(glm_fit$coefficients[1] +glm_fit$coefficients[3])
+odds_ratio_1 <-mean(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[0, 1)",],na.action = na.omit) )
 
-traditional_estimate_bin_4 <- logit2prob(glm_fit$coefficients[1] +glm_fit$coefficients[4])
+odds_ratio_2 <-mean(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[1, 10)",],na.action = na.omit))
+
+odds_ratio_3 <-mean(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[10, 20)",],na.action = na.omit))
+
+odds_ratio_4 <-mean(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[20, 70]",],na.action = na.omit))
+
+
+odds_ratio_1_quantile <-quantile(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[0, 1)",],na.action = na.omit),probs=c(.025,.975) )
+
+odds_ratio_2_quantile <-quantile(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[1, 10)",],na.action = na.omit),probs=c(.025,.975))
+
+odds_ratio_3_quantile <-quantile(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[10, 20)",],na.action = na.omit),probs=c(.025,.975))
+
+odds_ratio_4_quantile <-quantile(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[20, 70]",],na.action = na.omit),probs=c(.025,.975))
+
+
+prob_1 <- exp(odds_ratio_1)/(1+exp(odds_ratio_1))
+prob_2 <- exp(odds_ratio_2)/(1+exp(odds_ratio_2))
+prob_3 <- exp(odds_ratio_3)/(1+exp(odds_ratio_3))
+prob_4 <- exp(odds_ratio_4)/(1+exp(odds_ratio_4))
+
+lower_1 <- exp(odds_ratio_1_quantile[1])/(1+exp(odds_ratio_1_quantile[1]))
+lower_2 <- exp(odds_ratio_2_quantile[1])/(1+exp(odds_ratio_2_quantile[1]))
+lower_3 <- exp(odds_ratio_3_quantile[1])/(1+exp(odds_ratio_3_quantile[1]))
+lower_4 <- exp(odds_ratio_4_quantile[1])/(1+exp(odds_ratio_4_quantile[1]))
+
+upper_1 <- exp(odds_ratio_1_quantile[2])/(1+exp(odds_ratio_1_quantile[2]))
+upper_2 <- exp(odds_ratio_2_quantile[2])/(1+exp(odds_ratio_2_quantile[2]))
+upper_3 <- exp(odds_ratio_3_quantile[2])/(1+exp(odds_ratio_3_quantile[2]))
+upper_4 <- exp(odds_ratio_4_quantile[2])/(1+exp(odds_ratio_4_quantile[2]))
+
+traditional <- c(prob_1,prob_2,prob_3,prob_4)
+
+traditional_lower_ci <- c(lower_1,lower_2,lower_3,lower_4)
+traditional_upper_ci <- c(upper_1,upper_2,upper_3,upper_4)
 
 ```
 
@@ -293,7 +322,7 @@ traditional_estimate_bin_4 <- logit2prob(glm_fit$coefficients[1] +glm_fit$coeffi
 ```{r}
 library(mgcv)
 
-n_bootstrap_samples <-10
+n_bootstrap_samples <- 1000
 conMean_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 
 for(i in 1:n_bootstrap_samples){
@@ -307,30 +336,25 @@ for(i in 1:n_bootstrap_samples){
 }
 
 ## SATURED REGRESSION MODEL FOR NPMLE
-glm_fit <- glm( CHD ~ cigsPerDay*education*age*gender, data = fhs_binned_sample, family = "binomial")
+glm_fit <- glm(CHD ~ cigsPerDay*education*age*gender, data = fhs_binned_sample, family = "binomial")
 
 for (j in 1:length(levels(fhs_binned$cigsPerDay))){
   conMean_bootstrap[i,j] <- mean(predict(glm_fit, newdata=intervene_on_bin(j), type='response'))
 }
 }
 
-average_treatment_effect <- c()
-average_treatment_effect_ci <- matrix(NA,nrow=length(levels(fhs_binned_sample$cigsPerDay)),ncol=2)
+average_treatment_effect_ss <- c()
+average_treatment_effect_ci_ss <- matrix(NA,nrow=length(levels(fhs_binned_sample$cigsPerDay)),ncol=2)
 for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
-  average_treatment_effect[i] <- colMeans(conMean_bootstrap)[i]
-  average_treatment_effect_ci[i,] <- quantile(conMean_bootstrap[,i],probs=c(.025,.975))
+  average_treatment_effect_ss[i] <- colMeans(conMean_bootstrap)[i]
+  average_treatment_effect_ci_ss[i,] <- quantile(conMean_bootstrap[,i],probs=c(.025,.975))
 
 }
-
-plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
-     main = "Simple Substitution")
-points(average_treatment_effect_ci[,1],col='red',lty=2)
-points(average_treatment_effect_ci[,2],col='red',lty=2)
 ```
 
 ### IPTW
 ```{r}
-n_bootstrap_samples <-10
+n_bootstrap_samples <- 1000
 iptw_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 iptw_HT_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 
@@ -349,7 +373,7 @@ IPTW_bin_1<- mean( wt_1*as.numeric(fhs_binned_sample$cigsPerDay_bin_1==1)*as.num
 
 IPTW_bin_1_HT<- mean( wt_1*as.numeric(fhs_binned_sample$cigsPerDay_bin_1==1)*as.numeric(fhs_binned_sample$CHD==1))/mean( wt_1*as.numeric(fhs_binned_sample$cigsPerDay_bin_1==1))
 
-iptw_ic[1] <- var(wt_1*as.numeric(fhs_binned_sample$cigsPerDay_bin_1==1)*as.numeric(fhs_binned_sample$CHD==1))
+iptw_ic[1] <- var(wt_1*as.numeric(fhs_binned_sample$cigsPerDay_bin_1==1)*as.numeric(fhs_binned_sample$CHD==1))/length(wt_1)
 
 ### BIN 2
 glm_fit_iptw_bin_2 <- glm( cigsPerDay_bin_2 ~   education + age + gender, data = fhs_binned_sample, family = "binomial")
@@ -358,7 +382,7 @@ wt_2<- 1/prob.1W
 summary(wt_2)
 IPTW_bin_2<- mean( wt_2*as.numeric(fhs_binned_sample$cigsPerDay_bin_2==1)*as.numeric(fhs_binned_sample$CHD==1))
 
-iptw_ic[2] <-  var( wt_2*as.numeric(fhs_binned_sample$cigsPerDay_bin_2==1)*as.numeric(fhs_binned_sample$CHD==1))
+iptw_ic[2] <-  var( wt_2*as.numeric(fhs_binned_sample$cigsPerDay_bin_2==1)*as.numeric(fhs_binned_sample$CHD==1))/length(wt_2)
 
 
 IPTW_bin_2_HT<- mean( wt_2*as.numeric(fhs_binned_sample$cigsPerDay_bin_2==1)*as.numeric(fhs_binned_sample$CHD==1))/mean( wt_2*as.numeric(fhs_binned_sample$cigsPerDay_bin_2==1))
@@ -372,7 +396,7 @@ IPTW_bin_3<- mean( wt_3*as.numeric(fhs_binned_sample$cigsPerDay_bin_3==1)*as.num
 
 IPTW_bin_3_HT<- mean( wt_3*as.numeric(fhs_binned_sample$cigsPerDay_bin_3==1)*as.numeric(fhs_binned_sample$CHD==1))/mean( wt_3*as.numeric(fhs_binned_sample$cigsPerDay_bin_3==1))
 
-iptw_ic[3] <- var( wt_3*as.numeric(fhs_binned_sample$cigsPerDay_bin_3==1)*as.numeric(fhs_binned_sample$CHD==1))
+iptw_ic[3] <- var( wt_3*as.numeric(fhs_binned_sample$cigsPerDay_bin_3==1)*as.numeric(fhs_binned_sample$CHD==1))/length(wt_3)
 
 ### BIN 4
 glm_fit_iptw_bin_4 <- glm( cigsPerDay_bin_4 ~  education + age + gender, data = fhs_binned_sample, family = "binomial")
@@ -382,7 +406,7 @@ summary(wt_4)
 
 IPTW_bin_4 <-  mean( wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.numeric(fhs_binned_sample$CHD==1))
 
-iptw_ic[4] <- var(wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.numeric(fhs_binned_sample$CHD==1))
+iptw_ic[4] <- var(wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.numeric(fhs_binned_sample$CHD==1))/length(wt_4)
 
 IPTW_bin_4_HT<- mean( wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.numeric(fhs_binned_sample$CHD==1))/mean( wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1))
 
@@ -393,16 +417,24 @@ iptw_HT_bootstrap[i,] = c(IPTW_bin_1_HT, IPTW_bin_2_HT, IPTW_bin_3_HT, IPTW_bin_
 
 average_treatment_effect <- c()
 average_treatment_effect_ci <- matrix(NA,nrow=length(levels(fhs_binned_sample$cigsPerDay)),ncol=2)
+average_treatment_effect_ic_ci <- matrix(NA,nrow=length(levels(fhs_binned_sample$cigsPerDay)),ncol=2)
+
+
+average_treatment_effect_ht <- c()
+average_treatment_effect_ci_ht <- matrix(NA,nrow=length(levels(fhs_binned_sample$cigsPerDay)),ncol=2)
+
 for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
   average_treatment_effect[i] <- colMeans(iptw_bootstrap)[i]
   average_treatment_effect_ci[i,] <- quantile(iptw_bootstrap[,i],probs=c(.025,.975))
+  
+  average_treatment_effect_ic_ci[i,] <- c(colMeans(iptw_bootstrap)[i] - 1.96*sqrt(iptw_ic)[i] ,colMeans(iptw_bootstrap)[i]+ 1.96*sqrt(iptw_ic)[i])
 
+  average_treatment_effect_ht[i] <- colMeans(iptw_HT_bootstrap)[i]
+  average_treatment_effect_ci_ht[i,] <- quantile(iptw_HT_bootstrap[,i],probs=c(.025,.975))
+  
 }
 
-plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
-     main = "IPTW")
-points(average_treatment_effect_ci[,1],col='red',lty=2)
-points(average_treatment_effect_ci[,2],col='red',lty=2)
+
 
 hist(wt_1,xlab="Weights of bin 1")
 hist(wt_2,xlab="Weights of bin 2")
@@ -416,10 +448,12 @@ hist(wt_4,xlab="Weights of bin 4")
 ```{r}
 library('SuperLearner')
 SL.library<- c("SL.glmnet","SL.randomForest","SL.nnet","SL.earth")
-
-n_bootstrap_samples <-1
-tmle_bootstrap_bin_1 <- c()
 tmle_ic <- c()
+```
+
+```{r}
+n_bootstrap_samples <-1000
+tmle_bootstrap_bin_1 <- c()
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
   ### BIN1 TMLE
@@ -457,6 +491,8 @@ for (i in 1:n_bootstrap_samples){
   #### BIN 2 TMLE
 
 tmle_bootstrap_bin_2 <- c()
+
+
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
   X_minus_bin_2<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_2", "education", "age","gender") )
@@ -481,43 +517,44 @@ for (i in 1:n_bootstrap_samples){
 
 
 ```{r}
+#### BIN 3 TMLE
 tmle_bootstrap_bin_3 <- c()
+n_bootstrap_samples <- 1000
 
 for (i in 1:n_bootstrap_samples){
-  #### BIN 3 TMLE 
-  
   X_minus_bin_3<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_3", "education", "age","gender") )
   X_minus_bin_3$age <- as.numeric(X_minus_bin_3$age)
   
   X_minus_bin_3_all_bin_3 <- X_minus_bin_3
   X_minus_bin_3_all_bin_3$cigsPerDay_bin_3 <- 1
-  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_3, SL.library=SL.library, family="binomial")
-  expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_3_all_bin_3)$pred
+  SL.outcome <- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_3, SL.library=SL.library, family="binomial")
+  expY.givenA1 <- predict(SL.outcome, newdata=X_minus_bin_3_all_bin_3)$pred
+  expY.givenAW <- predict(SL.outcome)$pred
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_3==1), X=subset(X_minus_bin_3, select= -c(cigsPerDay_bin_3)),SL.library=SL.library, family="binomial")
-  probA1.givenW<- SL.exposure$SL.predict
-  H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_3==1)/probA1.givenW
-  logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
-  epsilon<- logitUpdate$coef
-  expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
+  probA1.givenW <- SL.exposure$SL.predict
+  H.AW <- as.numeric(fhs_binned$cigsPerDay_bin_3==1)/probA1.givenW
+  logitUpdate <- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
+  epsilon <- logitUpdate$coef
+  expY.givenAW.star <- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
   PsiHat.TMLE_bin_3 <- mean(expY.givenAW.star)
   tmle_bootstrap_bin_3[i] <- PsiHat.TMLE_bin_3
-  tmle_ic[3] <- var(H.AW*((as.numeric(fhs_binned$CHD)-1) - expY.givenAW) + expY.givenA1- expY.givenAW.star)
+  tmle_ic[3] <- var(H.AW*((as.numeric(fhs_binned$CHD)-1) - expY.givenAW) + expY.givenA1 - expY.givenAW.star)
 }
 ```
   
   
 ```{r}
-  #### BIN 4  TMLE 
+#### BIN 4  TMLE 
 tmle_bootstrap_bin_4 <- c()
 for (i in 1:n_bootstrap_samples){
-
-  X_minus_bin_4<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_4", "education", "age","gender") )
+  X_minus_bin_4 <- subset(fhs_binned_sample, select= c("cigsPerDay_bin_4", "education", "age","gender") )
   X_minus_bin_4$age <- as.numeric(X_minus_bin_4$age)
   
   X_minus_bin_4_all_bin_4 <- X_minus_bin_4
   X_minus_bin_4_all_bin_4$cigsPerDay_bin_4 <- 1
   SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_4, SL.library=SL.library, family="binomial")
   expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_4_all_bin_4)$pred
+  expY.givenAW <- predict(SL.outcome)$pred
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_4==1), X=subset(X_minus_bin_4, select= -c(cigsPerDay_bin_4)),SL.library=SL.library, family="binomial")
   probA1.givenW<- SL.exposure$SL.predict
   H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_4==1)/probA1.givenW
@@ -532,6 +569,7 @@ for (i in 1:n_bootstrap_samples){
 
 
 ```{r}
+tmle_bootstrap_bin_2 <- read.csv("tmle_bootstrap_bin_2.csv")
 tmle_bootstrap <- cbind(tmle_bootstrap_bin_1,tmle_bootstrap_bin_2,tmle_bootstrap_bin_3,tmle_bootstrap_bin_4)
 
 average_treatment_effect <- c()
@@ -542,10 +580,15 @@ for (i in 1:length(levels(fhs_binned$cigsPerDay))){
 
 }
 
-plot(average_treatment_effect,ylab="Probability of CHD",ylim=c(0,.5),
-     main = "TMLE")
-points(average_treatment_effect_ci[,1],col='red',lty=2)
-points(average_treatment_effect_ci[,2],col='red',lty=2)
+estimates_df <- data.frame(at = c(c(traditional),c(average_treatment_effect_ss),c(average_treatment_effect),c(average_treatment_effect_ht),c(average_treatment_effect)),at_min=c(c(traditional_lower_ci),c(average_treatment_effect_ci_ss[,1]),c(average_treatment_effect_ci[,1]),c(average_treatment_effect_ci_ht[,1]),c(average_treatment_effect_ic_ci[,1])),at_max=c(c(traditional_upper_ci),c(average_treatment_effect_ci_ss[,2]),c(average_treatment_effect_ci[,2]),c(average_treatment_effect_ci_ht[,2]),c(average_treatment_effect_ic_ci[,2])),Method=c(rep("GLM",4),rep("Simple Sub",4), rep("IPTW",4),rep("IPTW-HT",4),rep("IPTW-IC",4)),x=rep(c("0","1-10","10-20","20+"),5))
+
+library(ggplot2)
+
+
+
+ggplot(estimates_df, aes(y=at,x=x,color=Method)) +geom_errorbar(aes(x=x,ymin=at_min,ymax=at_max,color=Method),width = .4,position = position_dodge(.7)) +
+  theme_bw() + ylab("Probability of CHD") + xlab("Cigs Per Day")
+
 
 ```
 
