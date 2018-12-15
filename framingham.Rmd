@@ -10,7 +10,7 @@ output:
            keep_tex: yes
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,fig.pos = 'h')
 ```
 
 ```{r,include=FALSE}
@@ -44,7 +44,7 @@ The target population is white middle-class men and women aged 30 to 70 in the U
 The sameple in this study is white middle-class men and women aged 30 to 70 (at baseline) in Framingham, Massachusetts. The importance of the major CHD risk factors identified in this group have been shown in other studies to apply almost universally, even though the patterns of distribution may vary. Thus, we are willing to generalize to the target population.
 
 ## Step 1: Specify a Causal Model
-+
+
 - Endogenous nodes: $X = (W,Z,A,Y)$, where 
 
 - $W$ is age, gender,  education
@@ -164,9 +164,8 @@ Since we made no independence assumptions on our exogenous background factors, w
 
 #### 1) Randomization Assumption:
 
-Conditional on $W$, the counterfactual outcome is independent of the observed treatment: 
-$$ Y \perp  A|W$$
-```{r figc, fig.align='center',fig.cap="Causal Graph for the SCM", echo=FALSE,out.width='50%'}
+Conditional on $W$, the counterfactual outcome is independent of the observed treatment: $Y \perp  A|W$.
+```{r figc, fig.align='center',fig.cap="Causal Graph for an augmented SCM", echo=FALSE,out.width='50%'}
 knitr::include_graphics("./dags/augmented_dag.PNG")
 ```
 
@@ -174,14 +173,13 @@ $$U_A\perp U_Y,U_A\perp U_W,U_A\perp U_Z$$
 
 In this augmented/working SCM ($\mathcal{M^{**}}$), the unmeasured background factor of $A$ (cigarettes smoked per day) is independent of the unmeasured background factor of $Y$ (10yr CHD), the unmeasured background factor of $W$ (baseline age, gender, education, diabetes, BMI), and the unmeasured background factor of $Z$ (prevalence of stroke, hypertension, blood pressure, blood pressure medication, heart rate).
 
-Since $W$,$Z$, and $Y$ include SES and biological factors that affect human health, we aviod assuming independence between their unmeasured background factors. Thus, we consider it is more plausible to make the indepedence assumptions listed. We do not the mediator $Z$ to avoid opening a backdoor path. Under $M^**$, the backdoor criterion holds conditional on $W$. Additional data on factors that affect heath status and determinants could help with identifiability, but those factors are not well-understood. 
+Since $W$,$Z$, and $Y$ include SES and biological factors that affect human health, we aviod assuming independence between their unmeasured background factors. Thus, we consider it is more plausible to make the indepedence assumptions listed. We do not adjust the mediator $Z$ to avoid opening a backdoor path. Under $M^{**}$, the backdoor criterion holds conditional on $W$. Additional data on factors that affect heath status and determinants could help with identifiability, but those factors are not well-understood. 
 
 #### 2) Positivity Assumption:
 
-There must be a positive probability of each treatment condition within each possible strata of $W$. We need a positive probability of cigarettes smoked per day for each strata of $W$.
+There must be a positive probability of each treatment condition within each possible strata of $W$. We need a positive probability of cigarettes smoked per day in bin $i$ for each strata of $W$.
 
-```{r,include=FALSE}
-require(nnet)
+```{r, include=FALSE}
 # table for positivity
 #table(fhs_binned[,c('age', 'education', 'gender','cigsPerDay')])
 # check propensity scores
@@ -195,67 +193,67 @@ fhs_binned$cigsPerDay_bin_4 <- ifelse(fhs_binned$cigsPerDay == "[20, 70]",1,0)
 ### BIN 1
 bin1ps <- glm( cigsPerDay_bin_1 ~  gender + education + age, data = fhs_binned, family = "binomial")
 ps1 <- predict(bin1ps, type= "response")
-ps1sum = summary(ps1)
+ps1sum = c(summary(ps1)[1],summary(ps1)[4],summary(ps1)[6])
 
 ### BIN 2
 bin2ps <- glm( cigsPerDay_bin_2 ~  gender + education + age, data = fhs_binned, family = "binomial")
 ps2 <- predict(bin2ps, type= "response")
-ps2sum = summary(ps2)
+ps2sum = c(summary(ps2)[1],summary(ps2)[4],summary(ps2)[6])
 
 ### BIN 3
 bin3ps <- glm( cigsPerDay_bin_3 ~ gender + education + age, data = fhs_binned, family = "binomial")
 ps3 <- predict(bin3ps, type= "response")
-ps3sum = summary(ps3)
+ps3sum = c(summary(ps3)[1],summary(ps3)[4],summary(ps3)[6])
 
 ### BIN 4
 bin4ps <- glm( cigsPerDay_bin_4 ~  gender + education + age, data = fhs_binned, family = "binomial")
 ps4 <- predict(bin4ps, type= "response")
-ps4sum = summary(ps4)
+ps4sum = c(summary(ps4)[1],summary(ps4)[4],summary(ps4)[6])
 
 full_sum = rbind.data.frame(ps1sum,ps2sum,ps3sum,ps4sum)
 
-row.names(full_sum) = c("i=1", "i=2", "i=3", "i=4")
+row.names(full_sum) = c("0 cigarettes per day", "[1,10) cigarettes per day", "[10,19) cigarettes per day", "[20,70] cigarettes per day")
+colnames(full_sum) = c("Min", "Mean", "Max")
 ```
 
 $$
 \begin{aligned}
 min_{i\in A}\mathbb{P}_0(A=i|W=w)>0\\
-\text{for all}\ w \ \text{for which} 
+\text{for all}\ w \ \text{for which } 
 \mathbb{P}_0(W = w) \geq 0
 \end{aligned}
 $$
 
 where $i$ denote the index of a bin of $A$.
 
-# THIS NEEDS TO BE FIXED!!!!
 
-We are concerned about a positivity assumption violation for a bin with high numbers of cigarettes smoked per day since certain strata of $W$ might not smoke at all, and binning could make particular stratas have low probabilities of smoking certain numbers of cigarettes per day. We can informally check for a positivity assumption violation from tables of $A$ given a strata of $W$. One table from a strata of $W$ is shown below:
+We are concerned about a positivity assumption violation since binning covatiates could make particular stratas of $W$ have low probabilities of smoking certain numbers of cigarettes per day, especially a bin with high numbers of cigarettes smoked per day. We can informally check for a positivity assumption violation from tables of $A$ given a strata of $W$. One table from a strata of $W$ is shown below:
 
 \begin{table}[ht]
 \centering
-\caption{Table for BMI = [18.5, 25), Gender = 0, Diabetes = 0, A = 0 }
+\caption{Table for Gender = 0 (Female), cigsPerDay (A) = [10,20) }
 \small
 \begin{tabular}{|l|l|l|l|l|l|}
 \hline
 Strata & Education: 1 & Education: 2 & Education: 3 & Education: 4 & Education: NA \\ \hline
-Age: [32, 42) & 26 & 60 & 32 & 12 &  1 \\ \hline
-Age: [42, 49) & 40 & 42 & 41 & 18 &  0 \\ \hline
-Age: [49, 56) & 43 & 52 & 42 & 17 &  5  \\ \hline
-Age: [56, 70] & 75 & 41 & 36 & 16 &  2  \\ \hline
+Age: [32, 42) & 16 & 26 & 16 & 11 &  1 \\ \hline
+Age: [42, 49) & 23 & 33 & 17 & 10 &  0 \\ \hline
+Age: [49, 56) & 16 & 12 & 8 & 2 &  3  \\ \hline
+Age: [56, 70] & 15 & 11 & 5 & 1 &  0  \\ \hline
 \end{tabular}
 \end{table} 
 
-From the table above, we can see that we have 0 female whose BMI is in the range [18.5, 25), age is in the range of [42, 49), education level is missing, who does not have Diabetes, who does not smoke cigarettes. Thus, we have a sparsity issue. 
+From the table above, we can see that we have no female who smokes 10 to less than 20 cigarettes per day with missing education level in the age ranges [42, 49) and [56, 70] respectively. Thus, we have some sparsity issue which could affect the estimator performance, particularly the inverse probability of treatment weighting (IPTW). 
 
-# NEED TO FIX ABOVE!!!!
 
-We also calculated the predicted probability of each bin of $A$ (the number of cigarettes smoked per day) given a strata of $W$:
+We also investigated the treatment mechanism by calculating the predicted probability of each bin of $A$ (the number of cigarettes smoked per day) given a strata of $W$:
 
 ```{r, echo=FALSE, message=FALSE,warning=FALSE}
-kable(full_sum, caption = "Predicted Probabilities of CHD for each Strata of W")
+knitr::kable(full_sum, caption = "Predicted Probabilities of A for each Strata of W")
 ```
 
-From the table, we can see that the probability of falling into the last bin of $A$, which is $\geq 20$ cigarettes smoked per day, is very close to zero, indicating a practical violation of positivity assumption. Theoretically, randomizing the number of cigarettes smoked per day could help with identifiability, but it is not feasible.
+From the table's minimum probability column, we can see that some stratas of $W$ have relatively low probabilities for the number of cigarettes smoked per day in the 2nd, 3rd, and 4th bin, which would results in those stratas having high weights in the IPTW estimator. However, the probabilities are not close to zero. Therefore, we do not have a practical violation of positivity assumption. Theoretically, randomizing the number of cigarettes smoked per day could rid of positivity assumption violation concerns, but it is not feasible.
+
 
 ## Step 5. Statistical Model and Estimand
 
