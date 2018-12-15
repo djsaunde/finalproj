@@ -68,7 +68,6 @@ There are no exclusion restrictions or assumptions about functional form.
 
 #### Causal Graph
 
-# NEEDS TO BE FIXED!
 ```{r fig1, fig.align='center',fig.cap="Causal Graph for the SCM", echo=FALSE, out.width='50%'}
 knitr::include_graphics("./dags/dag_causal.PNG")
 ```
@@ -632,70 +631,47 @@ knitr::include_graphics("./pos_violation2.png")
 \newpage
 
 ## Team Member Contribution
-<!-- Feel free to add more tasks for switch things around here, these are placeholders!-->
+\begin{table}[h]
+  \begin{tabular}{|l|l|}
+  \hline
+    Member & Contributions \\ \hline
+    Michael Attah & - group discussion of causal question \\
+      & - design of causal graph \\
+      & - design of descriptive table \\
+      & - categorize covariates: Z\\
+      & - interpretation: causal\\ \hline
+    Bianca Doone & - group discussion of causal question \\
+      & - design of causal graph \\
+      & - time-varying assumptions \\
+      & - chi-squared test of indepedence\\
+      & - categorize covariates: W (age, education, gender) \\
+      & - bootstrap confidence intervals: IPTW \\
+      & - interpretation: statistical \\
+      & - limitations \\ \hline
+    Casey Graham & - group discussion of causal question \\
+      & - design of causal graph \\
+      & - categorize covariates: cigsPerDay \\
+      & - computation of simple substitution \\
+      & - computation of IPTW \\
+      & - computation of Superlearner/TMLE \\ \hline
+      & - bootstrap confidence intervals: TMLE, GLM \\
+    Daniel Saunders & - group discussion of causal question \\
+      & - design of causal graph \\
+      & - design of descriptive table \\
+      & - statistical estimand: G-computation \\
+      & - bootstrap confidence intervals: TMLE, simple substitution\\ 
+      & - statistical estimand: G-computation \\ \hline
+    Nutcha Wattanachit & - group causal question \\
+      & - design of causal graph \\
+      & - background story and target population \\
+      & - specifying causal parameter \\
+      & - design of working SCM ($\mathcal{M}^{**}$) \\
+      & - specify observed data and link to SCM \\
+      & - identifiability: randomization assumption \\
+      & - identifiability: positivity assumption \\ \hline
+  \end{tabular}
+\end{table}
 
-### Michael Attah
-\begin{itemize}
-\item Causal graph
-\item Causal question
-\item Estimation...
-\item Interpretation?
-\item etc
-\end{itemize}
-
-### Bianca Doone
-\begin{itemize}
-
-\item Bootstrap confidence interval
-\item Data Retrieval 
-\item Causal graph
-\item Causal question
-\item Causal Parameter
-\item Specify observed data and link to SCM
-\item Descriptive table
-\item Put together Table 1
-
-\end{itemize}
-
-### Casey Graham
-
-\begin{itemize}
-\item  Categorize covariates 
-\item  Causal Parameter
-\item  Conditional mean outcome
-\item  IPTW
-\item  Superlearner/TMLE
-\item  Causal graph
-\item  Causal question
-\item  Statistical Estimand: G-comp
-\item  etc
-
-\end{itemize}
-
-### Daniel Saunders
-
-\begin{itemize}
-\item  Data exploration
-\item  Interpretation
-\item  Design of causal graph
-\item  Bootstrap computation + R programming
-\item  Design of presentation slides
-
-\end{itemize}
-
-### Nutcha Wattanachit
-\begin{itemize}
-\item  Background story 
-\item  Descriptive table
-\item  Causal graph
-\item  Causal question
-\item  Causal Parameter
-\item  Specify observed data and link to SCM
-\item  Identifiability: Randomization assumption
-\item  Identifiability: Positivity assumption
-\item  Statistical Estimand: G-comp
-
-\end{itemize}
 
 
 ## References
