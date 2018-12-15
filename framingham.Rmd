@@ -519,6 +519,7 @@ for (i in 1:n_bootstrap_samples){
 ```{r}
 #### BIN 3 TMLE
 tmle_bootstrap_bin_3 <- c()
+
 n_bootstrap_samples <- 1000
 
 for (i in 1:n_bootstrap_samples){
@@ -596,9 +597,17 @@ ggplot(estimates_df, aes(y=at,x=x,color=Method)) +geom_errorbar(aes(x=x,ymin=at_
 
 <!-- What is the statistical interpretation of your analyses? Discuss differences (or lack thereof) in the estimates provided by the different estimators. What is the causal interpretation of your results and how plausible is it? What are key limitations of your analysis? How might these results (if at all) inform policy, understanding, and/or the design of future studies? -->
 
-### Statistical Interpretation
+### Statistical
 
 From the estimation of our statistical model $\mathcal{M}$, we found that the probability of developing coronary heart disease increases as the binned exposure (\texttt{cigsPerDay}) increases from, standardadized to the distribution of baseline covariates $W$. However, in bin \#2, corresponding to \texttt{cigsPerDay} $\in [1, 10)$, we found what seems to be a "protective" effect, in which smoking less than a pack of cigarettes as day is associated with a lower risk of CHD than not smoking at all. The difference risk in this bin is estimated at around 0.10-0.11, compared with . We argue that this may be due to \textit{non-differential misclassification}, since participants may have not self-reported smoking due to the negative stigma associated with it. For \texttt{cigsPerDay} $\geq$ 20, the probability of CHD plateaus near 0.2 (for the conditional mean outcome and IPTW estimators) and 0.16 (for TMLE).
+
+### Counterfactual
+
+The estimated effect of the exposure is the counterfactual probability of developiong coronary heart disease in 10 years under the exposure category \texttt{cigsPerDay} ($A_i, i \in \{1, 2, 3, 4 \}$), with the assumptions that conditioning on the baseline covariates $W$ (age, sex, \& education) and assumpting certain independence assumptions satisfies the backdoor criterion, and said independence assumptions and positivity holds. The observed general increase in estimated risk of CHD as the (binned) exposure increases is certainly plausible; however, the estimated reduction in risk of CHD for \texttt{cigsPerDay} $\in [1, 10)$ is less plausible, again perhaps due to biased data from non-differential misclassification on the exposure, or could in fact be evidence for a protective effect of low degrees of smoking on risk of CHD.
+
+### Limitations
+
+It is not likely that our target causal parameter is identifiable due to violations of the chosen independence assumptions, and thus our counterfactual estimation should not be accepted without some healthy skepticism. Many unmeasured confounders are possible, including pre-existing medical conditions not considered by the Framingham Heart Study patient surveys, diet and exercise habits, family history, genetic factors, and more. Future studies might expand the set of measured variables to include such information. As mentioned, we are also concerned about potential issues with reporting bias in the data. Finally, we did not have access to time-varying aspects of the data; e.g., smoking habits and biomarkers before or after baseline measurements were taken, many of which could contain information relevant to prediction of CHD outcomes.
 
 ```{r}
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[10, 20)" & fhs_binned$age == "[32, 42)",]$CHD)-1)
@@ -614,18 +623,6 @@ knitr::include_graphics("./effect.png")
 ```{r fig3, fig.align='center',fig.cap="Expected Outcome", echo=FALSE, out.width='50%'}
 knitr::include_graphics("./pos_violation2.png")
 ```
-
-
-##Statistical:
-
-The probability of developing CHD in 10 years increases as theexposure increases among subjects with similar baseline covariatesForcigsPerDay∈[1,10), the exposure appears to have a“protective effect”; this may be due to reporting bias / practicalpositivity violationsFor more than 20 cigarettes, the exposure effect starts to plateau,approaching a constant effect in risk of CHDTMLE estimates more conservative than conditional mean & IPTW
-
-
-##Counterfactual:
-
-The estimated effect of the exposure is the counterfactual probability of CHD in 10 years under the exposure category“cigsPerDay”,$A_i \ i \in \{0,1,2,3\}$), with the assumptions thatW(age, sex, BMI, education, and diabetes) satisfy the backdoorcriterion + positivity.Plausibility:As expected, we observed a general increase in estimated risk ofCHD as the (binned) exposure (cigsPerDay) is increased.Less plausible is the estimated reduction in risk of CHD for $cigsPerDay \in [0,10)$; this may be due to reporting bias, or may infact be evidence for a “protective effect” of smoking on risk of CHD.
-
-
 
 \newpage
 
@@ -675,8 +672,9 @@ The estimated effect of the exposure is the counterfactual probability of CHD in
 \begin{itemize}
 \item  Data exploration
 \item  Interpretation
-\item  Causal graph
-\item  Causal question
+\item  Design of causal graph
+\item  Bootstrap computation + R programming
+\item  Design of presentation slides
 
 \end{itemize}
 
