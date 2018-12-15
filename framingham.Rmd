@@ -452,7 +452,7 @@ tmle_ic <- c()
 n_bootstrap_samples <-1000
 ```
 
-```{r}
+```{r,eval=FALSE}
 tmle_bootstrap_bin_1 <- c()
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
@@ -487,7 +487,7 @@ for (i in 1:n_bootstrap_samples){
 ```
 
 
-```{r}
+```{r,eval=FALSE}
 #### BIN 2 TMLE
 tmle_bootstrap_bin_2 <- c()
 for (i in 1:n_bootstrap_samples){
@@ -513,7 +513,7 @@ for (i in 1:n_bootstrap_samples){
 ```
 
 
-```{r}
+```{r,eval=FALSE}
 #### BIN 3 TMLE
 tmle_bootstrap_bin_3 <- c()
 for (i in 1:n_bootstrap_samples){
@@ -538,7 +538,7 @@ for (i in 1:n_bootstrap_samples){
 ```
   
   
-```{r}
+```{r,eval=FALSE}
 #### BIN 4  TMLE 
 tmle_bootstrap_bin_4 <- c()
 for (i in 1:n_bootstrap_samples){
@@ -564,18 +564,28 @@ for (i in 1:n_bootstrap_samples){
 
 
 ```{r}
+tmle_bootstrap_bin_1 <- read.csv("tmle_bootstrap_bin_1.csv")
 tmle_bootstrap_bin_2 <- read.csv("tmle_bootstrap_bin_2.csv")
+tmle_bootstrap_bin_3 <- read.csv("tmle_bootstrap_bin_3.csv")
+tmle_bootstrap_bin_4 <- read.csv("tmle_bootstrap_bin_2.csv")
+
+tmle_bootstrap_bin_1 <- tmle_bootstrap_bin_1$x
+tmle_bootstrap_bin_2 <- tmle_bootstrap_bin_2$x
+tmle_bootstrap_bin_3 <- tmle_bootstrap_bin_3$x
+tmle_bootstrap_bin_4 <- tmle_bootstrap_bin_4$x
+
+
 tmle_bootstrap <- cbind(tmle_bootstrap_bin_1,tmle_bootstrap_bin_2,tmle_bootstrap_bin_3,tmle_bootstrap_bin_4)
 
-average_treatment_effect <- c()
-average_treatment_effect_ci <- matrix(NA,nrow=length(levels(fhs_binned$cigsPerDay)),ncol=2)
+average_treatment_effect_tmle <- c()
+average_treatment_effect_ci_tmle <- matrix(NA,nrow=length(levels(fhs_binned$cigsPerDay)),ncol=2)
 for (i in 1:length(levels(fhs_binned$cigsPerDay))){
-  average_treatment_effect[i] <- colMeans(tmle_bootstrap)[i]
-  average_treatment_effect_ci[i,] <- quantile(tmle_bootstrap[,i],probs=c(.025,.975))
+  average_treatment_effect_tmle[i] <- colMeans(tmle_bootstrap)[i]
+  average_treatment_effect_ci_tmle[i,] <- quantile(tmle_bootstrap[,i],probs=c(.025,.975))
 
 }
 
-estimates_df <- data.frame(at = c(c(traditional),c(average_treatment_effect_ss),c(average_treatment_effect),c(average_treatment_effect_ht),c(average_treatment_effect)),at_min=c(c(traditional_lower_ci),c(average_treatment_effect_ci_ss[,1]),c(average_treatment_effect_ci[,1]),c(average_treatment_effect_ci_ht[,1]),c(average_treatment_effect_ic_ci[,1])),at_max=c(c(traditional_upper_ci),c(average_treatment_effect_ci_ss[,2]),c(average_treatment_effect_ci[,2]),c(average_treatment_effect_ci_ht[,2]),c(average_treatment_effect_ic_ci[,2])),Method=c(rep("GLM",4),rep("Simple Sub",4), rep("IPTW",4),rep("IPTW-HT",4),rep("IPTW-IC",4)),x=rep(c("0","1-10","10-20","20+"),5))
+estimates_df <- data.frame(at = c(c(traditional),c(average_treatment_effect_tmle),c(average_treatment_effect_ss),c(average_treatment_effect),c(average_treatment_effect_ht),c(average_treatment_effect)),at_min=c(c(traditional_lower_ci),c(average_treatment_effect_ci_tmle[,1]),c(average_treatment_effect_ci_ss[,1]),c(average_treatment_effect_ci[,1]),c(average_treatment_effect_ci_ht[,1]),c(average_treatment_effect_ic_ci[,1])),at_max=c(c(traditional_upper_ci),c(average_treatment_effect_ci_tmle[,2]),c(average_treatment_effect_ci_ss[,2]),c(average_treatment_effect_ci[,2]),c(average_treatment_effect_ci_ht[,2]),c(average_treatment_effect_ic_ci[,2])),Method=c(rep("GLM",4),rep("TMLE",4),rep("Simple Sub",4), rep("IPTW",4),rep("IPTW-HT",4),rep("IPTW-IC",4)),x=rep(c("0","1-10","10-20","20+"),6))
 
 library(ggplot2)
 
