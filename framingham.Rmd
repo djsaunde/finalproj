@@ -639,7 +639,8 @@ knitr::include_graphics("./pos_violation2.png")
       & - design of causal graph \\
       & - design of descriptive table \\
       & - categorize covariates: Z\\
-      & - interpretation: causal\\ \hline
+      & - interpretation: causal\\ 
+      & - references \\ \hline
     Bianca Doone & - group discussion of causal question \\
       & - design of causal graph \\
       & - time-varying assumptions \\
@@ -653,8 +654,8 @@ knitr::include_graphics("./pos_violation2.png")
       & - categorize covariates: cigsPerDay \\
       & - computation of simple substitution \\
       & - computation of IPTW \\
-      & - computation of Superlearner/TMLE \\ \hline
-      & - bootstrap confidence intervals: TMLE, GLM \\
+      & - computation of Superlearner/TMLE \\ 
+      & - bootstrap confidence intervals: TMLE, GLM \\ \hline
     Daniel Saunders & - group discussion of causal question \\
       & - design of causal graph \\
       & - design of descriptive table \\
@@ -673,7 +674,14 @@ knitr::include_graphics("./pos_violation2.png")
 \end{table}
 
 
-
 ## References
 
 Boston University & the National Heart, Lung, & Blood Institute, Framingham Heart Study. 5 Dec. 2018: https://www.framinghamheartstudy.org
+
+
+World Health Organization. (2018). Body mass index - BMI. 29 Nov. 2018: 
+http://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi
+
+
+The National Heart, Lung, & Blood Institute, ATP III Guidelines At-A-Glance. 29 Nov. 2018: 
+https://www.nhlbi.nih.gov/files/docs/guidelines/atglance.pdf
