@@ -449,10 +449,10 @@ hist(wt_4,xlab="Weights of bin 4")
 library('SuperLearner')
 SL.library<- c("SL.glmnet","SL.randomForest","SL.nnet","SL.earth")
 tmle_ic <- c()
+n_bootstrap_samples <-1000
 ```
 
 ```{r}
-n_bootstrap_samples <-1000
 tmle_bootstrap_bin_1 <- c()
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
@@ -488,11 +488,8 @@ for (i in 1:n_bootstrap_samples){
 
 
 ```{r}
-  #### BIN 2 TMLE
-
+#### BIN 2 TMLE
 tmle_bootstrap_bin_2 <- c()
-
-
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
   X_minus_bin_2<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_2", "education", "age","gender") )
@@ -519,9 +516,6 @@ for (i in 1:n_bootstrap_samples){
 ```{r}
 #### BIN 3 TMLE
 tmle_bootstrap_bin_3 <- c()
-
-n_bootstrap_samples <- 1000
-
 for (i in 1:n_bootstrap_samples){
   X_minus_bin_3<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_3", "education", "age","gender") )
   X_minus_bin_3$age <- as.numeric(X_minus_bin_3$age)
@@ -623,6 +617,7 @@ knitr::include_graphics("./effect.png")
 ```{r fig3, fig.align='center',fig.cap="Expected Outcome", echo=FALSE, out.width='50%'}
 knitr::include_graphics("./pos_violation2.png")
 ```
+
 
 \newpage
 
