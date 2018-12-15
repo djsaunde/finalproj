@@ -44,8 +44,7 @@ The target population is white middle-class men and women aged 30 to 70 in the U
 The sameple in this study is white middle-class men and women aged 30 to 70 (at baseline) in Framingham, Massachusetts. The importance of the major CHD risk factors identified in this group have been shown in other studies to apply almost universally, even though the patterns of distribution may vary. Thus, we are willing to generalize to the target population.
 
 ## Step 1: Specify a Causal Model
-
-
++
 - Endogenous nodes: $X = (W,Z,A,Y)$, where 
 
 - $W$ is age, gender,  education
@@ -89,7 +88,6 @@ library(dplyr)
 
 ### REMOVE EXPOSURE AND OUTCOME NA
 fhs_complete_cases <- fhs %>%  filter(!is.na(cigsPerDay),!is.na(TenYearCHD),!is.na(age),!is.na(education),!is.na(male))
-
 ```
 
 
@@ -110,7 +108,6 @@ fhs_binned$prevalentStroke <- as.factor(fhs_complete_cases$prevalentStroke)
 
 ## Hypertension
 fhs_binned$prevalentHyp <- as.factor(fhs_complete_cases$prevalentHyp)
-
 
 # Variables binned based on science!
 ## age
@@ -162,11 +159,9 @@ colnames(table1) = c("Level","[0,1)", "[1,10)", "[10,19)", "[20,70]", "p")
 kable(table1, caption = "Number of Observations in Each Bin")
 ```
 
-
 ## Step 4. Identifiability
 
 Since we made no independence assumptions on our exogenous background factors, we will need to make additional independence assumptions for identifiability. For the target causal parameter in the SCM $\mathcal{M^*}$ to be identified from the observed data distribution, we need to make a randomization and a positivity assumption. 
-
 
 #### 1) Randomization Assumption:
 
@@ -185,6 +180,7 @@ Since $W$,$Z$, and $Y$ include SES and biological factors that affect human heal
 #### 2) Positivity Assumption:
 
 There must be a positive probability of each treatment condition within each possible strata of $W$. We need a positive probability of cigarettes smoked per day for each strata of $W$.
+
 ```{r,include=FALSE}
 require(nnet)
 # table for positivity
@@ -229,6 +225,7 @@ min_{i\in A}\mathbb{P}_0(A=i|W=w)>0\\
 \mathbb{P}_0(W = w) \geq 0
 \end{aligned}
 $$
+
 where $i$ denote the index of a bin of $A$.
 
 # THIS NEEDS TO BE FIXED!!!!
@@ -259,8 +256,7 @@ We also calculated the predicted probability of each bin of $A$ (the number of c
 kable(full_sum, caption = "Predicted Probabilities of CHD for each Strata of W")
 ```
 
-
-From the table, we can see that the probabiliy of falling into the last bin of $A$, which is $\geq 20$ cigarettes smoked per day, is very close to zero, indicating a practical violation of positivity assumption. Theoretically, randomizing the number of cigarettes smoked per day could help with identifiability, but it is not feasible.
+From the table, we can see that the probability of falling into the last bin of $A$, which is $\geq 20$ cigarettes smoked per day, is very close to zero, indicating a practical violation of positivity assumption. Theoretically, randomizing the number of cigarettes smoked per day could help with identifiability, but it is not feasible.
 
 ## Step 5. Statistical Model and Estimand
 
@@ -279,8 +275,7 @@ $$
 
 ### Classical Model Based on Chi Squared
 ```{r}
-
-glm_fit <- glm( CHD ~ factor(cigsPerDay) + education + age + gender + bmi + totChol+prevalentStroke+prevalentHyp+BP+diabetes, data = fhs_binned, family = "binomial")
+glm_fit <- glm(CHD ~ factor(cigsPerDay) + education + age + gender + bmi + totChol+prevalentStroke+prevalentHyp+BP+diabetes, data = fhs_binned, family = "binomial")
 
 odds_ratio_1 <-mean(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[0, 1)",],na.action = na.omit) )
 
@@ -327,7 +322,7 @@ traditional_upper_ci <- c(upper_1,upper_2,upper_3,upper_4)
 ```{r}
 library(mgcv)
 
-n_bootstrap_samples <-1000
+n_bootstrap_samples <- 1000
 conMean_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 
 for(i in 1:n_bootstrap_samples){
@@ -340,10 +335,8 @@ for(i in 1:n_bootstrap_samples){
   return (fhs_binned_i)
 }
 
-
-  
 ## SATURED REGRESSION MODEL FOR NPMLE
-glm_fit <- glm( CHD ~ cigsPerDay*education*age*gender, data = fhs_binned_sample, family = "binomial")
+glm_fit <- glm(CHD ~ cigsPerDay*education*age*gender, data = fhs_binned_sample, family = "binomial")
 
 for (j in 1:length(levels(fhs_binned$cigsPerDay))){
   conMean_bootstrap[i,j] <- mean(predict(glm_fit, newdata=intervene_on_bin(j), type='response'))
@@ -357,19 +350,15 @@ for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
   average_treatment_effect_ci_ss[i,] <- quantile(conMean_bootstrap[,i],probs=c(.025,.975))
 
 }
-
-
 ```
 
 ### IPTW
 ```{r}
-
-n_bootstrap_samples <-1000
+n_bootstrap_samples <- 1000
 iptw_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 iptw_HT_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 
 iptw_ic <- c()
-
 
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
@@ -421,8 +410,6 @@ iptw_ic[4] <- var(wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.nume
 
 IPTW_bin_4_HT<- mean( wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1)*as.numeric(fhs_binned_sample$CHD==1))/mean( wt_4*as.numeric(fhs_binned_sample$cigsPerDay_bin_4==1))
 
-
-
 iptw_bootstrap[i,] = c(IPTW_bin_1, IPTW_bin_2, IPTW_bin_3, IPTW_bin_4)
 iptw_HT_bootstrap[i,] = c(IPTW_bin_1_HT, IPTW_bin_2_HT, IPTW_bin_3_HT, IPTW_bin_4_HT)
 
@@ -449,7 +436,6 @@ for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
 
 
 
-
 hist(wt_1,xlab="Weights of bin 1")
 hist(wt_2,xlab="Weights of bin 2")
 hist(wt_3,xlab="Weights of bin 3")
@@ -460,13 +446,14 @@ hist(wt_4,xlab="Weights of bin 4")
 ### Superlearner/TMLE
 
 ```{r}
-
 library('SuperLearner')
 SL.library<- c("SL.glmnet","SL.randomForest","SL.nnet","SL.earth")
+tmle_ic <- c()
+```
 
+```{r}
 n_bootstrap_samples <-1000
 tmle_bootstrap_bin_1 <- c()
-tmle_ic <- c()
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
   ### BIN1 TMLE
@@ -486,7 +473,6 @@ for (i in 1:n_bootstrap_samples){
   expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_1_all_bin_1)$pred
   expY.givenAW <-  predict(SL.outcome)$pred
 
-  
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_1==1), X=subset(X_minus_bin_1, select= -c(cigsPerDay_bin_1)),SL.library=SL.library, family="binomial")
   probA1.givenW<- SL.exposure$SL.predict
   H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_1==1)/probA1.givenW
@@ -531,46 +517,45 @@ for (i in 1:n_bootstrap_samples){
 
 
 ```{r}
-
+#### BIN 3 TMLE
 tmle_bootstrap_bin_3 <- c()
-n_bootstrap_samples <- 100
+
+n_bootstrap_samples <- 1000
+
 for (i in 1:n_bootstrap_samples){
-  #### BIN 3 TMLE 
-  
   X_minus_bin_3<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_3", "education", "age","gender") )
   X_minus_bin_3$age <- as.numeric(X_minus_bin_3$age)
   
   X_minus_bin_3_all_bin_3 <- X_minus_bin_3
   X_minus_bin_3_all_bin_3$cigsPerDay_bin_3 <- 1
-  SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_3, SL.library=SL.library, family="binomial")
-  expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_3_all_bin_3)$pred
+  SL.outcome <- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_3, SL.library=SL.library, family="binomial")
+  expY.givenA1 <- predict(SL.outcome, newdata=X_minus_bin_3_all_bin_3)$pred
+  expY.givenAW <- predict(SL.outcome)$pred
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_3==1), X=subset(X_minus_bin_3, select= -c(cigsPerDay_bin_3)),SL.library=SL.library, family="binomial")
-  probA1.givenW<- SL.exposure$SL.predict
-  H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_3==1)/probA1.givenW
-  logitUpdate<- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
-  epsilon<- logitUpdate$coef
-  expY.givenAW.star<- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
+  probA1.givenW <- SL.exposure$SL.predict
+  H.AW <- as.numeric(fhs_binned$cigsPerDay_bin_3==1)/probA1.givenW
+  logitUpdate <- glm(fhs_binned$CHD ~ -1 +offset(qlogis(expY.givenA1)) + H.AW, family='binomial')
+  epsilon <- logitUpdate$coef
+  expY.givenAW.star <- plogis(qlogis(expY.givenA1)+ epsilon*H.AW)
   PsiHat.TMLE_bin_3 <- mean(expY.givenAW.star)
   tmle_bootstrap_bin_3[i] <- PsiHat.TMLE_bin_3
-  tmle_ic[3] <- var(H.AW*((as.numeric(fhs_binned$CHD)-1) - expY.givenAW) + expY.givenA1- expY.givenAW.star)/nrow(fhs_binned)
+  tmle_ic[3] <- var(H.AW*((as.numeric(fhs_binned$CHD)-1) - expY.givenAW) + expY.givenA1 - expY.givenAW.star)
 }
 ```
   
   
 ```{r}
-  #### BIN 4  TMLE 
-
-
+#### BIN 4  TMLE 
 tmle_bootstrap_bin_4 <- c()
 for (i in 1:n_bootstrap_samples){
-
-  X_minus_bin_4<- subset(fhs_binned_sample, select= c("cigsPerDay_bin_4", "education", "age","gender") )
+  X_minus_bin_4 <- subset(fhs_binned_sample, select= c("cigsPerDay_bin_4", "education", "age","gender") )
   X_minus_bin_4$age <- as.numeric(X_minus_bin_4$age)
   
   X_minus_bin_4_all_bin_4 <- X_minus_bin_4
   X_minus_bin_4_all_bin_4$cigsPerDay_bin_4 <- 1
   SL.outcome<- SuperLearner(Y=as.numeric(fhs_binned_sample$CHD==1), X=X_minus_bin_4, SL.library=SL.library, family="binomial")
   expY.givenA1 <-  predict(SL.outcome, newdata=X_minus_bin_4_all_bin_4)$pred
+  expY.givenAW <- predict(SL.outcome)$pred
   SL.exposure<- SuperLearner(Y=as.numeric(fhs_binned$cigsPerDay_bin_4==1), X=subset(X_minus_bin_4, select= -c(cigsPerDay_bin_4)),SL.library=SL.library, family="binomial")
   probA1.givenW<- SL.exposure$SL.predict
   H.AW<- as.numeric(fhs_binned$cigsPerDay_bin_4==1)/probA1.givenW
@@ -585,9 +570,7 @@ for (i in 1:n_bootstrap_samples){
 
 
 ```{r}
-
 tmle_bootstrap_bin_2 <- read.csv("tmle_bootstrap_bin_2.csv")
-
 tmle_bootstrap <- cbind(tmle_bootstrap_bin_1,tmle_bootstrap_bin_2,tmle_bootstrap_bin_3,tmle_bootstrap_bin_4)
 
 average_treatment_effect <- c()
@@ -612,17 +595,24 @@ ggplot(estimates_df, aes(y=at,x=x,color=Method)) +geom_errorbar(aes(x=x,ymin=at_
 
 ## Step 7. Result Interpretation
 
-What is the statistical interpretation of your analyses? Discuss differences (or lack thereof) in the estimates provided by the different estimators. What is the causal interpretation of your results and how plausible is it? What are key limitations of your analysis? How might these results (if at all) inform policy, understanding, and/or the design of future studies?
+<!-- What is the statistical interpretation of your analyses? Discuss differences (or lack thereof) in the estimates provided by the different estimators. What is the causal interpretation of your results and how plausible is it? What are key limitations of your analysis? How might these results (if at all) inform policy, understanding, and/or the design of future studies? -->
 
+### Statistical
+
+From the estimation of our statistical model $\mathcal{M}$, we found that the probability of developing coronary heart disease increases as the binned exposure (\texttt{cigsPerDay}) increases from, standardadized to the distribution of baseline covariates $W$. However, in bin \#2, corresponding to \texttt{cigsPerDay} $\in [1, 10)$, we found what seems to be a "protective" effect, in which smoking less than a pack of cigarettes as day is associated with a lower risk of CHD than not smoking at all. The difference risk in this bin is estimated at around 0.10-0.11, compared with . We argue that this may be due to \textit{non-differential misclassification}, since participants may have not self-reported smoking due to the negative stigma associated with it. For \texttt{cigsPerDay} $\geq$ 20, the probability of CHD plateaus near 0.2 (for the conditional mean outcome and IPTW estimators) and 0.16 (for TMLE).
+
+### Counterfactual
+
+The estimated effect of the exposure is the counterfactual probability of developiong coronary heart disease in 10 years under the exposure category \texttt{cigsPerDay} ($A_i, i \in \{1, 2, 3, 4 \}$), with the assumptions that conditioning on the baseline covariates $W$ (age, sex, \& education) and assumpting certain independence assumptions satisfies the backdoor criterion, and said independence assumptions and positivity holds. The observed general increase in estimated risk of CHD as the (binned) exposure increases is certainly plausible; however, the estimated reduction in risk of CHD for \texttt{cigsPerDay} $\in [1, 10)$ is less plausible, again perhaps due to biased data from non-differential misclassification on the exposure, or could in fact be evidence for a protective effect of low degrees of smoking on risk of CHD.
+
+### Limitations
+
+It is not likely that our target causal parameter is identifiable due to violations of the chosen independence assumptions, and thus our counterfactual estimation should not be accepted without some healthy skepticism. Many unmeasured confounders are possible, including pre-existing medical conditions not considered by the Framingham Heart Study patient surveys, diet and exercise habits, family history, genetic factors, and more. Future studies might expand the set of measured variables to include such information. As mentioned, we are also concerned about potential issues with reporting bias in the data. Finally, we did not have access to time-varying aspects of the data; e.g., smoking habits and biomarkers before or after baseline measurements were taken, many of which could contain information relevant to prediction of CHD outcomes.
 
 ```{r}
-
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[10, 20)" & fhs_binned$age == "[32, 42)",]$CHD)-1)
-
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[0, 1)" & fhs_binned$age == "[32, 42)",]$CHD)-1)
-
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[1, 10)" & fhs_binned$age == "[56, 70]",]$CHD)-1)
-
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[10, 20)" & fhs_binned$age == "[56, 70]",]$CHD)-1)
 ```
 
@@ -633,18 +623,6 @@ knitr::include_graphics("./effect.png")
 ```{r fig3, fig.align='center',fig.cap="Expected Outcome", echo=FALSE, out.width='50%'}
 knitr::include_graphics("./pos_violation2.png")
 ```
-
-
-##Statistical:
-
-The probability of developing CHD in 10 years increases as theexposure increases among subjects with similar baseline covariatesForcigsPerDay∈[1,10), the exposure appears to have a“protective effect”; this may be due to reporting bias / practicalpositivity violationsFor more than 20 cigarettes, the exposure effect starts to plateau,approaching a constant effect in risk of CHDTMLE estimates more conservative than conditional mean & IPTW
-
-
-##Counterfactual:
-
-The estimated effect of the exposure is the counterfactual probability of CHD in 10 years under the exposure category“cigsPerDay”,$A_i \ i \in \{0,1,2,3\}$), with the assumptions thatW(age, sex, BMI, education, and diabetes) satisfy the backdoorcriterion + positivity.Plausibility:As expected, we observed a general increase in estimated risk ofCHD as the (binned) exposure (cigsPerDay) is increased.Less plausible is the estimated reduction in risk of CHD for $cigsPerDay \in [0,10)$; this may be due to reporting bias, or may infact be evidence for a “protective effect” of smoking on risk of CHD.
-
-
 
 \newpage
 
@@ -693,11 +671,10 @@ The estimated effect of the exposure is the counterfactual probability of CHD in
 
 \begin{itemize}
 \item  Data exploration
-\item  Estimation...
-\item  Interpretation?
-\item  Causal graph
-\item  Causal question
-\item  etc
+\item  Interpretation
+\item  Design of causal graph
+\item  Bootstrap computation + R programming
+\item  Design of presentation slides
 
 \end{itemize}
 
