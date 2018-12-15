@@ -567,7 +567,7 @@ for (i in 1:n_bootstrap_samples){
 tmle_bootstrap_bin_1 <- read.csv("tmle_bootstrap_bin_1.csv")
 tmle_bootstrap_bin_2 <- read.csv("tmle_bootstrap_bin_2.csv")
 tmle_bootstrap_bin_3 <- read.csv("tmle_bootstrap_bin_3.csv")
-tmle_bootstrap_bin_4 <- read.csv("tmle_bootstrap_bin_2.csv")
+tmle_bootstrap_bin_4 <- read.csv("tmle_bootstrap_bin_4.csv")
 
 tmle_bootstrap_bin_1 <- tmle_bootstrap_bin_1$x
 tmle_bootstrap_bin_2 <- tmle_bootstrap_bin_2$x
