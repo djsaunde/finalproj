@@ -558,6 +558,14 @@ e.g., smoking habits and biomarkers before or after baseline
 measurements were taken, many of which could contain information
 relevant to prediction of CHD outcomes.
 
+We also evaluated the sensitivity to bin-sizing to evaluate the
+seemingly protective effect smoking \([1, 10)\) cigarettes has. To
+investigate, we first removed all binning and treated each observed
+smoking value as a unique factor. We then plotted the resulting
+estimates of each \(E(Y | A=a)\) for all \(a\) levels of cigarettes per
+day, along with the corresponding sample sizes used to estimate the
+counterfactual.
+
 \begin{figure}[H]
 
 {\centering \includegraphics[width=0.5\linewidth]{./effect} 
@@ -567,6 +575,12 @@ relevant to prediction of CHD outcomes.
 \caption{Expected Outcome}\label{fig:fig5}
 \end{figure}
 
+As we can see, there are quite a few levels of cigarettes per day that
+have a low sample size (\textless{}10). In order to correct for this, we
+first removed all estimates of \(E(Y | A=a )\) for all levels of
+cigarettes with samples size \textless{} 10. We next fit a loess curve
+to the resulting estimates to get a sense of the overall trend.
+
 \begin{figure}[H]
 
 {\centering \includegraphics[width=0.5\linewidth]{./pos_violation2} 
@@ -575,6 +589,11 @@ relevant to prediction of CHD outcomes.
 
 \caption{Expected Outcome}\label{fig:fig6}
 \end{figure}
+
+We can see from Fig 6 that by removing the bins with low sample size we
+see a general positive trend as cigarettes per day increase. Although
+the protective effect requires further exploration, bin size does seem
+to play an important role.
 
 \newpage
 

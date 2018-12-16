@@ -644,21 +644,21 @@ The estimated effect of the exposure is the counterfactual probability of develo
 
 It is not likely that our target causal parameter is identifiable due to violations of the chosen independence assumptions, and thus our counterfactual estimation should not be accepted without some healthy skepticism. Many unmeasured confounders are possible, including pre-existing medical conditions not considered by the Framingham Heart Study patient surveys, diet and exercise habits, family history, genetic factors, and more. Future studies might expand the set of measured variables to include such information. As mentioned, we are also concerned about potential issues with reporting bias in the data. Finally, we did not have access to time-varying aspects of the data; e.g., smoking habits and biomarkers before or after baseline measurements were taken, many of which could contain information relevant to prediction of CHD outcomes.
 
-```{r,echo=FALSE,include=FALSE}
-mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[10, 20)" & fhs_binned$age == "[32, 42)",]$CHD)-1)
-mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[0, 1)" & fhs_binned$age == "[32, 42)",]$CHD)-1)
-mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[1, 10)" & fhs_binned$age == "[56, 70]",]$CHD)-1)
-mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[10, 20)" & fhs_binned$age == "[56, 70]",]$CHD)-1)
-```
+We also evaluated the sensitivity to bin-sizing to evaluate the seemingly protective effect smoking $[1, 10)$ cigarettes has. To investigate, we first removed all binning and treated each observed smoking value as a unique factor. We then plotted the resulting estimates of each $E(Y | A=a)$ for all $a$ levels of cigarettes per day, along with the corresponding sample sizes used to estimate the counterfactual. 
+
 
 ```{r fig5, fig.align='center',fig.cap="Expected Outcome", echo=FALSE, out.width='50%'}
 knitr::include_graphics("./effect.png")
 ```
 
+
+As we can see, there are quite a few levels of cigarettes per day that have a low sample size (<10). In order to correct for this, we first removed all estimates of $E(Y | A=a )$ for all levels of cigarettes with samples size < 10. We next fit a loess curve to the resulting estimates to get a sense of the overall trend.  
+
 ```{r fig6, fig.align='center',fig.cap="Expected Outcome", echo=FALSE, out.width='50%'}
 knitr::include_graphics("./pos_violation2.png")
 ```
 
+We can see from Fig 6 that by removing the bins with low sample size we see a general positive trend as cigarettes per day increase. Although the protective effect requires further exploration, bin size does seem to play an important role. 
 
 \newpage
 
