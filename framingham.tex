@@ -74,26 +74,24 @@
 }
 
 \setlength{\droptitle}{-2em}
-
   \title{Causal Inference Final Project: Effect of Smoking on 10-year Development
 of Coronary Heart Disease}
-    \pretitle{\vspace{\droptitle}\centering\huge}
+  \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-    \author{Bianca Doone, Michael Attah, Graham Casey Gibson, Daniel Saunders,
+  \author{Bianca Doone, Michael Attah, Graham Casey Gibson, Daniel Saunders,
 Nutcha Wattanachit}
-    \preauthor{\centering\large\emph}
+  \preauthor{\centering\large\emph}
   \postauthor{\par}
-      \predate{\centering\large\emph}
+  \predate{\centering\large\emph}
   \postdate{\par}
-    \date{November 25, 2018}
+  \date{November 25, 2018}
 
 \usepackage{float}
 
 \begin{document}
 \maketitle
 
-\hypertarget{background-story}{%
-\section{Background Story}\label{background-story}}
+\section{Background Story}\label{background-story}
 
 Coronary heart disease (CHD) is the leading cause of death and serious
 illness in the United States. The Framingham Heart Study's objective was
@@ -114,18 +112,15 @@ development of CHD, specifically, it is not immediately obvious whether
 smoking 5 cigarettes per day affects the development of CHD differently
 than smoking 15 cigarettes per day does.
 
-\hypertarget{causal-roadmap}{%
-\section{Causal Roadmap}\label{causal-roadmap}}
+\section{Causal Roadmap}\label{causal-roadmap}
 
-\hypertarget{step-0-specify-the-scientific-question}{%
 \subsection{Step 0: Specify the Scientific
-Question}\label{step-0-specify-the-scientific-question}}
+Question}\label{step-0-specify-the-scientific-question}
 
 What is the effect of smoking on the ten-year development of Coronary
 Heart Disease?
 
-\hypertarget{target-population}{%
-\paragraph{Target population}\label{target-population}}
+\paragraph{Target population}\label{target-population}
 
 The target population is white middle-class men and women aged 30 to 70
 in the US.
@@ -137,9 +132,8 @@ studies to apply almost universally, even though the patterns of
 distribution may vary. Thus, we are willing to generalize to the target
 population.
 
-\hypertarget{step-1-specify-a-causal-model}{%
 \subsection{Step 1: Specify a Causal
-Model}\label{step-1-specify-a-causal-model}}
+Model}\label{step-1-specify-a-causal-model}
 
 \begin{itemize}
 \item
@@ -171,8 +165,7 @@ Model}\label{step-1-specify-a-causal-model}}
 There are no exclusion restrictions or assumptions about functional
 form.
 
-\hypertarget{causal-graph}{%
-\paragraph{Causal Graph}\label{causal-graph}}
+\paragraph{Causal Graph}\label{causal-graph}
 
 \begin{figure}[H]
 
@@ -183,12 +176,10 @@ form.
 \caption{Causal Graph for the SCM}\label{fig:fig1}
 \end{figure}
 
-\hypertarget{step-2-counterfactuals-causal-parameter}{%
 \subsection{Step 2: Counterfactuals \& Causal
-Parameter}\label{step-2-counterfactuals-causal-parameter}}
+Parameter}\label{step-2-counterfactuals-causal-parameter}
 
-\hypertarget{causal-parameter}{%
-\paragraph{Causal Parameter}\label{causal-parameter}}
+\paragraph{Causal Parameter}\label{causal-parameter}
 
 \[{\Psi^*}^{i}(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,2,3,4\}\]
 where \(i\) represent the bin of cigarettes smoked per day. \(Y_i\)
@@ -196,10 +187,9 @@ denotes the counterfactual outcome (the ten-year development of
 cardiovascular disease), if possibly contrary to fact, a person's number
 of cigarettes smoked per day is within \(i^{th}\) bin.
 
-\hypertarget{step-3.-specify-your-observed-data-and-its-link-to-the-causal-model}{%
 \subsection{Step 3. Specify your observed data and its link to the
 causal
-model}\label{step-3.-specify-your-observed-data-and-its-link-to-the-causal-model}}
+model}\label{step-3.-specify-your-observed-data-and-its-link-to-the-causal-model}
 
 The dataset is adapted from Framingham Heart Study. We assume that
 Gender, Age, Education, and Number of Cigarettes per Day (\(A\)) were
@@ -291,8 +281,7 @@ CHD (\%) & 0 & 1784 ( 85.4) & 420 ( 89.2) & 320 ( 84.2) & 958 ( 82.0) &
 \bottomrule
 \end{longtable}
 
-\hypertarget{step-4.-identifiability}{%
-\subsection{Step 4. Identifiability}\label{step-4.-identifiability}}
+\subsection{Step 4. Identifiability}\label{step-4.-identifiability}
 
 Since we made no independence assumptions on our exogenous background
 factors, we will need to make additional independence assumptions for
@@ -300,8 +289,7 @@ identifiability. For the target causal parameter in the SCM
 \(\mathcal{M^*}\) to be identified from the observed data distribution,
 we need to make a randomization and a positivity assumption.
 
-\hypertarget{randomization-assumption}{%
-\paragraph{1) Randomization Assumption}\label{randomization-assumption}}
+\paragraph{1) Randomization Assumption}\label{randomization-assumption}
 
 We could assume that all unmeasured background factors in our SCM are
 independent, which is sufficient, but not minimally sufficient. In the
@@ -334,8 +322,7 @@ but those factors are not well-understood.
 
 \[U_A\perp U_Y,U_A\perp U_W,U_A\perp U_Z\]
 
-\hypertarget{positivity-assumption}{%
-\paragraph{2) Positivity Assumption}\label{positivity-assumption}}
+\paragraph{2) Positivity Assumption}\label{positivity-assumption}
 
 There must be a positive probability of each treatment condition within
 each possible strata of \(W\). We need a positive probability of
@@ -413,9 +400,8 @@ have a practical violation of positivity assumption. Theoretically,
 randomizing the number of cigarettes smoked per day could rid of
 positivity assumption violation concerns, but it is not feasible.
 
-\hypertarget{step-5.-statistical-model-and-estimand}{%
 \subsection{Step 5. Statistical Model and
-Estimand}\label{step-5.-statistical-model-and-estimand}}
+Estimand}\label{step-5.-statistical-model-and-estimand}
 
 The target parameter of \(\mathbb{P}_0\), which equals the causal
 parameter in the augmented causal model \(\mathcal{M}^{**}\) is given by
@@ -428,8 +414,7 @@ the G-Computation formula:
 \end{aligned}
 \] where \(i\) represent the bin of cigarettes smoked per day.
 
-\hypertarget{step-6.-estimation}{%
-\subsection{Step 6. Estimation}\label{step-6.-estimation}}
+\subsection{Step 6. Estimation}\label{step-6.-estimation}
 
 In order to estimate the causal effect of smoking on risk of CHD we
 evaluate 6 separate estimators. The first is a classical estimate made
@@ -442,9 +427,8 @@ the classical GLM where theoretical CI were obtained. This was done
 mostly to evaluate the performance of the bootstrap confidence agains
 the theoretical confidence derived from the influence curve.
 
-\hypertarget{classical-model-based-on-chi-squared}{%
 \subsubsection{Classical Model Based on
-Chi-Squared}\label{classical-model-based-on-chi-squared}}
+Chi-Squared}\label{classical-model-based-on-chi-squared}
 
 In order to comapre the causal based estimators to traditional
 statistics, we first fit a generalized linear model as follows.
@@ -464,8 +448,7 @@ obtain an estimate of \(E(Y | A=a_i)\) we simply call the predict method
 on our existing data (with no specific intervention) and average the
 results.
 
-\hypertarget{simple-substitution}{%
-\subsubsection{Simple Substitution}\label{simple-substitution}}
+\subsubsection{Simple Substitution}\label{simple-substitution}
 
 In order to evaluate our causal estimate we implemented a non-parametric
 simple substiution estimator for the conditional mean outcome. We used a
@@ -477,9 +460,8 @@ given for the \(i^{th}\) bin by
 
 Confidence intervals were obtained via the bootstrap.
 
-\hypertarget{inverse-probability-of-treatment-weighting-iptw}{%
 \subsubsection{Inverse Probability of Treatment Weighting
-(IPTW)}\label{inverse-probability-of-treatment-weighting-iptw}}
+(IPTW)}\label{inverse-probability-of-treatment-weighting-iptw}
 
 In order to evaluate our causal estimate we examined three variations on
 the traditional IPTW estimator as follows.
@@ -506,12 +488,11 @@ We evaluated 3 IPTW estimators:
 \end{figure}
 
 We can see from the weight histograms that the second bin has the
-largest discrepency in the weighting. This may help explain why we see a
+largest variance in the weighting. This may help explain why we see a
 protective effect of smoking in the second bin.
 
-\hypertarget{targeted-maximum-likelihood-estimator-tmle}{%
 \subsubsection{Targeted Maximum Likelihood Estimator
-(TMLE)}\label{targeted-maximum-likelihood-estimator-tmle}}
+(TMLE)}\label{targeted-maximum-likelihood-estimator-tmle}
 
 Finally, we examined our causal estimate under targeted maximum
 likelihood. In our superlearner library we evaluated 4 candidate
@@ -546,12 +527,10 @@ bootstrap intervals, which might be an issue with the bootstrap sample
 size. Finally, the estimates from TMLE were conservative with respect to
 the other estimators
 
-\hypertarget{step-7.-result-interpretation}{%
 \subsection{Step 7. Result
-Interpretation}\label{step-7.-result-interpretation}}
+Interpretation}\label{step-7.-result-interpretation}
 
-\hypertarget{statistical}{%
-\subsubsection{Statistical}\label{statistical}}
+\subsubsection{Statistical}\label{statistical}
 
 From the estimation of our statistical model \(\mathcal{M}\), we found
 that the probability of developing coronary heart disease increases as
@@ -568,8 +547,7 @@ For \texttt{cigsPerDay} \(\geq\) 20, the probability of CHD plateaus
 near 0.2 (for the conditional mean outcome and IPTW estimators) and 0.16
 (for TMLE).
 
-\hypertarget{counterfactual}{%
-\subsubsection{Counterfactual}\label{counterfactual}}
+\subsubsection{Counterfactual}\label{counterfactual}
 
 The estimated effect of the exposure is the counterfactual probability
 of developiong coronary heart disease in 10 years under the exposure
@@ -585,8 +563,7 @@ non-differential misclassification on the exposure, or could in fact be
 evidence for a protective effect of low degrees of smoking on risk of
 CHD.
 
-\hypertarget{limitations}{%
-\subsubsection{Limitations}\label{limitations}}
+\subsubsection{Limitations}\label{limitations}
 
 It is not likely that our target causal parameter is identifiable due to
 violations of the chosen independence assumptions, and thus our
@@ -634,15 +611,24 @@ to the resulting estimates to get a sense of the overall trend.
 \caption{Expected Outcome}\label{fig:fig6}
 \end{figure}
 
-We can see from Fig 6 that by removing the bins with low sample size we
-see a general positive trend as cigarettes per day increase. Although
-the protective effect requires further exploration, bin size does seem
-to play an important role.
+We can see from Fig 6 that by removing the bins with low sample size
+there is a general positive trend as cigarettes per day increase.
+Although the protective effect requires further exploration, bin size
+does seem to play an important role.
+
+\subsubsection{Conclusion}\label{conclusion}
+
+The probability of developing a coronary heart disease is higher amongst
+those who smoke. Although the causal model \(M^**\) places some
+unrealistic assumptions upon the data distribution, under these
+assumptions we see that smoking causes an increase in CHD risk. Further
+work is needed to evaluate the impact of specific levels of smoking and
+to delve deeper into the seeming paradoxes uncovered by the causal
+estimates.
 
 \newpage
 
-\hypertarget{team-member-contribution}{%
-\subsection{Team Member Contribution}\label{team-member-contribution}}
+\subsection{Team Member Contribution}\label{team-member-contribution}
 
 \begin{table}[h!]
   \begin{tabular}{|l|l|}
@@ -686,18 +672,17 @@ to play an important role.
   \end{tabular}
 \end{table}
 
-\hypertarget{references}{%
-\subsection{References}\label{references}}
+\subsection{References}\label{references}
 
 Boston University \& the National Heart, Lung, \& Blood Institute,
-Framingham Heart Study. 5 Dec.~2018:
+Framingham Heart Study. 5 Dec. 2018:
 \url{https://www.framinghamheartstudy.org}
 
-World Health Organization. (2018). Body mass index - BMI. 29 Nov.~2018:
+World Health Organization. (2018). Body mass index - BMI. 29 Nov. 2018:
 \url{http://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi}
 
 The National Heart, Lung, \& Blood Institute, ATP III Guidelines
-At-A-Glance. 29 Nov.~2018:
+At-A-Glance. 29 Nov. 2018:
 \url{https://www.nhlbi.nih.gov/files/docs/guidelines/atglance.pdf}
 
 

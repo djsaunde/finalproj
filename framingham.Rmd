@@ -478,7 +478,7 @@ hist(wt_2,xlab="IPTW Weights of bin 2", main = "")
 hist(wt_3,xlab="IPTW Weights of bin 3", main = "")
 hist(wt_4,xlab="IPTW Weights of bin 4", main = "")
 ```
-We can see from the weight histograms that the second bin has the largest discrepency in the weighting. This may help explain why we see a protective effect of smoking in the second bin. 
+We can see from the weight histograms that the second bin has the largest variance in the weighting. This may help explain why we see a protective effect of smoking in the second bin. 
 
 ### Targeted Maximum Likelihood Estimator (TMLE)
 
@@ -675,7 +675,11 @@ As we can see, there are quite a few levels of cigarettes per day that have a lo
 knitr::include_graphics("./pos_violation2.png")
 ```
 
-We can see from Fig 6 that by removing the bins with low sample size we see a general positive trend as cigarettes per day increase. Although the protective effect requires further exploration, bin size does seem to play an important role. 
+We can see from Fig 6 that by removing the bins with low sample size there is a general positive trend as cigarettes per day increase. Although the protective effect requires further exploration, bin size does seem to play an important role. 
+
+### Conclusion
+
+The probability of developing a coronary heart disease is higher amongst those who smoke. Although the causal model $M^**$ places some unrealistic assumptions upon the data distribution, under these assumptions we see that smoking causes an increase in CHD risk. Further work is needed to evaluate the impact of specific levels of smoking and to delve deeper into the seeming paradoxes uncovered by the causal estimates.  
 
 \newpage
 
