@@ -29,46 +29,6 @@
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
 \usepackage{longtable,booktabs}
 \usepackage{graphicx,grffile}
 \makeatletter
@@ -114,23 +74,25 @@
 }
 
 \setlength{\droptitle}{-2em}
+
   \title{Causal Inference Final Project: Effect of Smoking on 10-year Development
 of Coronary Heart Disease}
-  \pretitle{\vspace{\droptitle}\centering\huge}
+    \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-  \author{Bianca Doone, Michael Attah, Graham Casey Gibson, Daniel Saunders,
+    \author{Bianca Doone, Michael Attah, Graham Casey Gibson, Daniel Saunders,
 Nutcha Wattanachit}
-  \preauthor{\centering\large\emph}
+    \preauthor{\centering\large\emph}
   \postauthor{\par}
-  \predate{\centering\large\emph}
+      \predate{\centering\large\emph}
   \postdate{\par}
-  \date{November 25, 2018}
+    \date{November 25, 2018}
 
 
 \begin{document}
 \maketitle
 
-\section{Background Story}\label{background-story}
+\hypertarget{background-story}{%
+\section{Background Story}\label{background-story}}
 
 Coronary heart disease (CHD) is the leading cause of death and serious
 illness in the United States. The Framingham Heart Study's objective was
@@ -151,15 +113,18 @@ development of CHD, specifically, it is not immediately obvious whether
 smoking 5 cigarettes per day affects the development of CHD differently
 than smoking 15 cigarettes per day does.
 
-\section{Causal Roadmap}\label{causal-roadmap}
+\hypertarget{causal-roadmap}{%
+\section{Causal Roadmap}\label{causal-roadmap}}
 
+\hypertarget{step-0-specify-the-scientific-question}{%
 \subsection{Step 0: Specify the Scientific
-Question}\label{step-0-specify-the-scientific-question}
+Question}\label{step-0-specify-the-scientific-question}}
 
 What is the effect of smoking on the ten-year development of Coronary
 Heart Disease?
 
-\paragraph{Target population}\label{target-population}
+\hypertarget{target-population}{%
+\paragraph{Target population}\label{target-population}}
 
 The target population is white middle-class men and women aged 30 to 70
 in the US.
@@ -171,8 +136,9 @@ studies to apply almost universally, even though the patterns of
 distribution may vary. Thus, we are willing to generalize to the target
 population.
 
+\hypertarget{step-1-specify-a-causal-model}{%
 \subsection{Step 1: Specify a Causal
-Model}\label{step-1-specify-a-causal-model}
+Model}\label{step-1-specify-a-causal-model}}
 
 \begin{itemize}
 \item
@@ -204,23 +170,24 @@ Model}\label{step-1-specify-a-causal-model}
 There are no exclusion restrictions or assumptions about functional
 form.
 
-\paragraph{Causal Graph}\label{causal-graph}
+\hypertarget{causal-graph}{%
+\paragraph{Causal Graph}\label{causal-graph}}
 
-\section{NEEDS TO BE FIXED!}\label{needs-to-be-fixed}
+\begin{figure}[h]
 
-\begin{figure}
-
-{\centering \includegraphics[width=0.5\linewidth]{./dags/dag_causal} 
+{\centering \includegraphics[width=0.6\linewidth]{./dags/dag_causal} 
 
 }
 
 \caption{Causal Graph for the SCM}\label{fig:fig1}
 \end{figure}
 
+\hypertarget{step-2-counterfactuals-causal-parameter}{%
 \subsection{Step 2: Counterfactuals \& Causal
-Parameter}\label{step-2-counterfactuals-causal-parameter}
+Parameter}\label{step-2-counterfactuals-causal-parameter}}
 
-\paragraph{Causal Parameter}\label{causal-parameter}
+\hypertarget{causal-parameter}{%
+\paragraph{Causal Parameter}\label{causal-parameter}}
 
 \[{\Psi^*}^{i}(\mathbb{P}^*)=\mathbb{E}^*[Y_i]\ \ \ i\in \{1,2,3,4\}\]
 where \(i\) represent the bin of cigarettes smoked per day. \(Y_i\)
@@ -228,9 +195,10 @@ denotes the counterfactual outcome (the ten-year development of
 cardiovascular disease), if possibly contrary to fact, a person's number
 of cigarettes smoked per day is within \(i^{th}\) bin.
 
+\hypertarget{step-3.-specify-your-observed-data-and-its-link-to-the-causal-model}{%
 \subsection{Step 3. Specify your observed data and its link to the
 causal
-model}\label{step-3.-specify-your-observed-data-and-its-link-to-the-causal-model}
+model}\label{step-3.-specify-your-observed-data-and-its-link-to-the-causal-model}}
 
 The dataset is adapted from Framingham Heart Study. We assume that
 Gender, Age, Education, and Number of Cigarettes per Day (\(A\)) were
@@ -322,7 +290,8 @@ CHD (\%) & 0 & 1784 ( 85.4) & 420 ( 89.2) & 320 ( 84.2) & 958 ( 82.0) &
 \bottomrule
 \end{longtable}
 
-\subsection{Step 4. Identifiability}\label{step-4.-identifiability}
+\hypertarget{step-4.-identifiability}{%
+\subsection{Step 4. Identifiability}\label{step-4.-identifiability}}
 
 Since we made no independence assumptions on our exogenous background
 factors, we will need to make additional independence assumptions for
@@ -330,133 +299,120 @@ identifiability. For the target causal parameter in the SCM
 \(\mathcal{M^*}\) to be identified from the observed data distribution,
 we need to make a randomization and a positivity assumption.
 
-\paragraph{1) Randomization Assumption:}\label{randomization-assumption}
+\hypertarget{randomization-assumption}{%
+\paragraph{1) Randomization
+Assumption:}\label{randomization-assumption}}
 
 Conditional on \(W\), the counterfactual outcome is independent of the
-observed treatment: \[ Y \perp  A|W\]
-
-\begin{figure}
-
-{\centering \includegraphics[width=0.5\linewidth]{./dags/augmented_dag} 
-
-}
-
-\caption{Causal Graph for the SCM}\label{fig:figc}
-\end{figure}
-
-\[U_A\perp U_Y,U_A\perp U_W,U_A\perp U_Z\]
-
-In this augmented/working SCM (\(\mathcal{M^{**}}\)), the unmeasured
-background factor of \(A\) (cigarettes smoked per day) is independent of
-the unmeasured background factor of \(Y\) (10yr CHD), the unmeasured
-background factor of \(W\) (baseline age, gender, education, diabetes,
-BMI), and the unmeasured background factor of \(Z\) (prevalence of
-stroke, hypertension, blood pressure, blood pressure medication, heart
-rate).
+observed treatment: \(Y \perp A|W\). In this augmented/working SCM
+(\(\mathcal{M^{**}}\)), the unmeasured background factor of \(A\)
+(cigarettes smoked per day) is independent of the unmeasured background
+factor of \(Y\) (10yr CHD), the unmeasured background factor of \(W\)
+(baseline age, gender, education, diabetes, BMI), and the unmeasured
+background factor of \(Z\) (prevalence of stroke, hypertension, blood
+pressure, blood pressure medication, heart rate).
 
 Since \(W\),\(Z\), and \(Y\) include SES and biological factors that
 affect human health, we aviod assuming independence between their
 unmeasured background factors. Thus, we consider it is more plausible to
-make the indepedence assumptions listed. We do not the mediator \(Z\) to
-avoid opening a backdoor path. Under \(M^**\), the backdoor criterion
-holds conditional on \(W\). Additional data on factors that affect heath
-status and determinants could help with identifiability, but those
-factors are not well-understood.
+make the indepedence assumptions listed. We do not adjust the mediator
+\(Z\) to avoid opening a backdoor path. Under \(M^{**}\), the backdoor
+criterion holds conditional on \(W\). Additional data on factors that
+affect heath status and determinants could help with identifiability,
+but those factors are not well-understood.
 
-\paragraph{2) Positivity Assumption:}\label{positivity-assumption}
+\begin{figure}[h]
+
+{\centering \includegraphics[width=0.7\linewidth]{./dags/augmented_dag} 
+
+}
+
+\caption{Causal Graph for an augmented SCM}\label{fig:figc}
+\end{figure}
+
+\[U_A\perp U_Y,U_A\perp U_W,U_A\perp U_Z\]
+
+\hypertarget{positivity-assumption}{%
+\paragraph{2) Positivity Assumption:}\label{positivity-assumption}}
 
 There must be a positive probability of each treatment condition within
 each possible strata of \(W\). We need a positive probability of
-cigarettes smoked per day for each strata of \(W\).
+cigarettes smoked per day in bin \(i\) for each strata of \(W\).
 
 \[
 \begin{aligned}
 min_{i\in A}\mathbb{P}_0(A=i|W=w)>0\\
-\text{for all}\ w \ \text{for which} 
+\text{for all}\ w \ \text{for which } 
 \mathbb{P}_0(W = w) \geq 0
 \end{aligned}
-\] where \(i\) denote the index of a bin of \(A\).
+\]
 
-\section{THIS NEEDS TO BE FIXED!!!!}\label{this-needs-to-be-fixed}
+where \(i\) denote the index of a bin of \(A\).
 
-We are concerned about a positivity assumption violation for a bin with
-high numbers of cigarettes smoked per day since certain strata of \(W\)
-might not smoke at all, and binning could make particular stratas have
-low probabilities of smoking certain numbers of cigarettes per day. We
-can informally check for a positivity assumption violation from tables
-of \(A\) given a strata of \(W\). One table from a strata of \(W\) is
-shown below:
+We are concerned about a positivity assumption violation since binning
+covatiates could make particular stratas of \(W\) have low probabilities
+of smoking certain numbers of cigarettes per day, especially a bin with
+high numbers of cigarettes smoked per day. We can informally check for a
+positivity assumption violation from tables of \(A\) given a strata of
+\(W\). One table from a strata of \(W\) is shown below:
 
 \begin{table}[ht]
 \centering
-\caption{Table for BMI = [18.5, 25), Gender = 0, Diabetes = 0, A = 0 }
+\caption{Table for Gender = 0 (Female), cigsPerDay (A) = [10,20) }
 \small
 \begin{tabular}{|l|l|l|l|l|l|}
 \hline
 Strata & Education: 1 & Education: 2 & Education: 3 & Education: 4 & Education: NA \\ \hline
-Age: [32, 42) & 26 & 60 & 32 & 12 &  1 \\ \hline
-Age: [42, 49) & 40 & 42 & 41 & 18 &  0 \\ \hline
-Age: [49, 56) & 43 & 52 & 42 & 17 &  5  \\ \hline
-Age: [56, 70] & 75 & 41 & 36 & 16 &  2  \\ \hline
+Age: [32, 42) & 16 & 26 & 16 & 11 &  1 \\ \hline
+Age: [42, 49) & 23 & 33 & 17 & 10 &  0 \\ \hline
+Age: [49, 56) & 16 & 12 & 8 & 2 &  3  \\ \hline
+Age: [56, 70] & 15 & 11 & 5 & 1 &  0  \\ \hline
 \end{tabular}
 \end{table}
 
-From the table above, we can see that we have 0 female whose BMI is in
-the range {[}18.5, 25), age is in the range of {[}42, 49), education
-level is missing, who does not have Diabetes, who does not smoke
-cigarettes. Thus, we have a sparsity issue.
+From the table above, we can see that we have no female who smokes 10 to
+less than 20 cigarettes per day with missing education level in the age
+ranges {[}42, 49) and {[}56, 70{]} respectively. Thus, we have some
+sparsity issue which could affect the estimator performance,
+particularly the inverse probability of treatment weighting (IPTW).
 
-\section{NEED TO FIX ABOVE!!!!}\label{need-to-fix-above}
+We also investigated the treatment mechanism by calculating the
+predicted probability of each bin of \(A\) (the number of cigarettes
+smoked per day) given a strata of \(W\):
 
-We also calculated the predicted probability of each bin of \(A\) (the
-number of cigarettes smoked per day) given a strata of \(W\):
-
-\begin{longtable}[]{@{}lrrrrrr@{}}
-\caption{Predicted Probabilities of CHD for each Strata of
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Predicted Probabilities of A for each Strata of
 W}\tabularnewline
 \toprule
-& c.0.285367089748959..0.0612950549329788..0.0592083666852972.. &
-c.0.427146494355085..0.0743610835769698..0.0680967575002984.. &
-c.0.496890467062084..0.130851483132409..0.0894467944558553..0.221903501631759
-&
-c.0.508519961051581..0.114654333008947..0.0925024342753821..0.284323271665553
-&
-c.0.633555593922955..0.153716386674473..0.114911135918826..0.45159495956664
-&
-c.0.744054639002225..0.173331986730923..0.142804434050837..0.563099017937758\tabularnewline
+& Min & Mean & Max\tabularnewline
 \midrule
 \endfirsthead
 \toprule
-& c.0.285367089748959..0.0612950549329788..0.0592083666852972.. &
-c.0.427146494355085..0.0743610835769698..0.0680967575002984.. &
-c.0.496890467062084..0.130851483132409..0.0894467944558553..0.221903501631759
-&
-c.0.508519961051581..0.114654333008947..0.0925024342753821..0.284323271665553
-&
-c.0.633555593922955..0.153716386674473..0.114911135918826..0.45159495956664
-&
-c.0.744054639002225..0.173331986730923..0.142804434050837..0.563099017937758\tabularnewline
+& Min & Mean & Max\tabularnewline
 \midrule
 \endhead
-i=1 & 0.2853671 & 0.4271465 & 0.4968905 & 0.5085200 & 0.6335556 &
-0.7440546\tabularnewline
-i=2 & 0.0612951 & 0.0743611 & 0.1308515 & 0.1146543 & 0.1537164 &
+0 cigarettes per day & 0.2853671 & 0.5085200 & 0.7440546\tabularnewline
+{[}1,10) cigarettes per day & 0.0612951 & 0.1146543 &
 0.1733320\tabularnewline
-i=3 & 0.0592084 & 0.0680968 & 0.0894468 & 0.0925024 & 0.1149111 &
+{[}10,19) cigarettes per day & 0.0592084 & 0.0925024 &
 0.1428044\tabularnewline
-i=4 & 0.0765399 & 0.1628045 & 0.2219035 & 0.2843233 & 0.4515950 &
+{[}20,70{]} cigarettes per day & 0.0765399 & 0.2843233 &
 0.5630990\tabularnewline
 \bottomrule
 \end{longtable}
 
-From the table, we can see that the probabiliy of falling into the last
-bin of \(A\), which is \(\geq 20\) cigarettes smoked per day, is very
-close to zero, indicating a practical violation of positivity
-assumption. Theoretically, randomizing the number of cigarettes smoked
-per day could help with identifiability, but it is not feasible.
+From the table's minimum probability column, we can see that some
+stratas of \(W\) have relatively low probabilities for the number of
+cigarettes smoked per day in the 2nd, 3rd, and 4th bin, which would
+results in those stratas having high weights in the IPTW estimator.
+However, the probabilities are not close to zero. Therefore, we do not
+have a practical violation of positivity assumption. Theoretically,
+randomizing the number of cigarettes smoked per day could rid of
+positivity assumption violation concerns, but it is not feasible.
 
+\hypertarget{step-5.-statistical-model-and-estimand}{%
 \subsection{Step 5. Statistical Model and
-Estimand}\label{step-5.-statistical-model-and-estimand}
+Estimand}\label{step-5.-statistical-model-and-estimand}}
 
 The target parameter of \(\mathbb{P}_0\), which equals the causal
 parameter in the augmented causal model \(\mathcal{M}^{**}\) is given by
@@ -469,549 +425,90 @@ the G-Computation formula:
 \end{aligned}
 \]
 
-\subsection{Step 6. Estimation}\label{step-6.-estimation}
+\hypertarget{step-6.-estimation}{%
+\subsection{Step 6. Estimation}\label{step-6.-estimation}}
 
-\subsubsection{Conditional Mean outcome}\label{conditional-mean-outcome}
+\hypertarget{classical-model-based-on-chi-squared}{%
+\subsubsection{Classical Model Based on Chi
+Squared}\label{classical-model-based-on-chi-squared}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(mgcv)}
-\end{Highlighting}
-\end{Shaded}
+\hypertarget{simple-substitution}{%
+\subsubsection{Simple Substitution}\label{simple-substitution}}
 
-\begin{verbatim}
-## Loading required package: nlme
-\end{verbatim}
+\hypertarget{iptw}{%
+\subsubsection{IPTW}\label{iptw}}
 
-\begin{verbatim}
-## 
-## Attaching package: 'nlme'
-\end{verbatim}
+\begin{figure}[h]
 
-\begin{verbatim}
-## The following object is masked from 'package:dplyr':
-## 
-##     collapse
-\end{verbatim}
+{\centering \includegraphics[width=0.7\linewidth]{framingham_files/figure-latex/fig iptw-1} 
 
-\begin{verbatim}
-## This is mgcv 1.8-20. For overview type 'help("mgcv-package")'.
-\end{verbatim}
+}
 
-\begin{verbatim}
-## 
-## Attaching package: 'mgcv'
-\end{verbatim}
+\caption{Distribution of Weights}\label{fig:fig iptw}
+\end{figure}
 
-\begin{verbatim}
-## The following object is masked from 'package:nnet':
-## 
-##     multinom
-\end{verbatim}
+\hypertarget{superlearnertmle}{%
+\subsubsection{Superlearner/TMLE}\label{superlearnertmle}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{n_bootstrap_samples <-}\DecValTok{10}
-\NormalTok{conMean_bootstrap <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow=}\NormalTok{n_bootstrap_samples,}\DataTypeTok{ncol=}\DecValTok{4}\NormalTok{)}
+\includegraphics{framingham_files/figure-latex/unnamed-chunk-15-1.pdf}
 
-\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_bootstrap_samples)\{}
-  \KeywordTok{set.seed}\NormalTok{(i)}
-\NormalTok{  fhs_binned_sample <-}\StringTok{ }\NormalTok{fhs_binned[}\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(fhs_binned),}\KeywordTok{nrow}\NormalTok{(fhs_binned),}\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{),]}
-  
-\NormalTok{  intervene_on_bin <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(i)\{}
-\NormalTok{  fhs_binned_i <-}\StringTok{ }\NormalTok{fhs_binned_sample}
-\NormalTok{  fhs_binned_i}\OperatorTok{$}\NormalTok{cigsPerDay <-}\KeywordTok{levels}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay)[i]}
-  \KeywordTok{return}\NormalTok{ (fhs_binned_i)}
-\NormalTok{\}}
-
-
-  
-\NormalTok{## SATURED REGRESSION MODEL FOR NPMLE}
-\NormalTok{glm_fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{( CHD }\OperatorTok{~}\StringTok{ }\NormalTok{cigsPerDay}\OperatorTok{*}\NormalTok{education}\OperatorTok{*}\NormalTok{age}\OperatorTok{*}\NormalTok{gender, }\DataTypeTok{data =}\NormalTok{ fhs_binned_sample, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{)}
-
-\ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(}\KeywordTok{levels}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay)))\{}
-\NormalTok{  conMean_bootstrap[i,j] <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(}\KeywordTok{predict}\NormalTok{(glm_fit, }\DataTypeTok{newdata=}\KeywordTok{intervene_on_bin}\NormalTok{(j), }\DataTypeTok{type=}\StringTok{'response'}\NormalTok{))}
-\NormalTok{\}}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{average_treatment_effect <-}\StringTok{ }\KeywordTok{c}\NormalTok{()}
-\NormalTok{average_treatment_effect_ci <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DataTypeTok{nrow=}\KeywordTok{length}\NormalTok{(}\KeywordTok{levels}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay)),}\DataTypeTok{ncol=}\DecValTok{2}\NormalTok{)}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(}\KeywordTok{levels}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay)))\{}
-\NormalTok{  average_treatment_effect[i] <-}\StringTok{ }\KeywordTok{colMeans}\NormalTok{(conMean_bootstrap)[i]}
-\NormalTok{  average_treatment_effect_ci[i,] <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(conMean_bootstrap[,i],}\DataTypeTok{probs=}\KeywordTok{c}\NormalTok{(.}\DecValTok{025}\NormalTok{,.}\DecValTok{975}\NormalTok{))}
-
-\NormalTok{\}}
-
-\KeywordTok{plot}\NormalTok{(average_treatment_effect,}\DataTypeTok{ylab=}\StringTok{"Probability of CHD"}\NormalTok{,}\DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,.}\DecValTok{5}\NormalTok{),}
-     \DataTypeTok{main =} \StringTok{"Simple Substitution"}\NormalTok{)}
-\KeywordTok{points}\NormalTok{(average_treatment_effect_ci[,}\DecValTok{1}\NormalTok{],}\DataTypeTok{col=}\StringTok{'red'}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
-\KeywordTok{points}\NormalTok{(average_treatment_effect_ci[,}\DecValTok{2}\NormalTok{],}\DataTypeTok{col=}\StringTok{'red'}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{framingham_files/figure-latex/unnamed-chunk-7-1.pdf}
-
-\subsubsection{IPTW}\label{iptw}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{n_bootstrap_samples <-}\DecValTok{10}
-\NormalTok{iptw_bootstrap <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow=}\NormalTok{n_bootstrap_samples,}\DataTypeTok{ncol=}\DecValTok{4}\NormalTok{)}
-
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_bootstrap_samples)\{}
-  \KeywordTok{set.seed}\NormalTok{(i)}
-\NormalTok{  fhs_binned_sample <-}\StringTok{ }\NormalTok{fhs_binned[}\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(fhs_binned),}\KeywordTok{nrow}\NormalTok{(fhs_binned),}\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{),]}
-
-\NormalTok{### BIN 1}
-\NormalTok{glm_fit_iptw_bin_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{glm}\NormalTok{( cigsPerDay_bin_}\DecValTok{1} \OperatorTok{~}\StringTok{   }\NormalTok{education }\OperatorTok{+}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{gender, }\DataTypeTok{data =}\NormalTok{ fhs_binned_sample, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{)}
-\NormalTok{prob.1W <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(glm_fit_iptw_bin_}\DecValTok{1}\NormalTok{, }\DataTypeTok{type=} \StringTok{"response"}\NormalTok{)}
-\NormalTok{wt_}\DecValTok{1}\NormalTok{<-}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{prob.1W}
-\KeywordTok{summary}\NormalTok{(wt_}\DecValTok{1}\NormalTok{)}
-\NormalTok{IPTW_bin_}\DecValTok{1}\NormalTok{<-}\StringTok{ }\KeywordTok{mean}\NormalTok{( wt_}\DecValTok{1}\OperatorTok{*}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{1}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{*}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{CHD}\OperatorTok{==}\DecValTok{1}\NormalTok{))}
-
-
-\NormalTok{### BIN 2}
-\NormalTok{glm_fit_iptw_bin_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{glm}\NormalTok{( cigsPerDay_bin_}\DecValTok{2} \OperatorTok{~}\StringTok{   }\NormalTok{education }\OperatorTok{+}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{gender, }\DataTypeTok{data =}\NormalTok{ fhs_binned_sample, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{)}
-\NormalTok{prob.1W <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(glm_fit_iptw_bin_}\DecValTok{2}\NormalTok{, }\DataTypeTok{type=} \StringTok{"response"}\NormalTok{)}
-\NormalTok{wt_}\DecValTok{2}\NormalTok{<-}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{prob.1W}
-\KeywordTok{summary}\NormalTok{(wt_}\DecValTok{2}\NormalTok{)}
-\NormalTok{IPTW_bin_}\DecValTok{2}\NormalTok{<-}\StringTok{ }\KeywordTok{mean}\NormalTok{( wt_}\DecValTok{2}\OperatorTok{*}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{2}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{*}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{CHD}\OperatorTok{==}\DecValTok{1}\NormalTok{))}
-
-\NormalTok{### BIN 3}
-\NormalTok{glm_fit_iptw_bin_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\KeywordTok{glm}\NormalTok{( cigsPerDay_bin_}\DecValTok{3} \OperatorTok{~}\StringTok{  }\NormalTok{education }\OperatorTok{+}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{gender, }\DataTypeTok{data =}\NormalTok{ fhs_binned_sample, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{)}
-\NormalTok{prob.1W <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(glm_fit_iptw_bin_}\DecValTok{3}\NormalTok{, }\DataTypeTok{type=} \StringTok{"response"}\NormalTok{)}
-\NormalTok{wt_}\DecValTok{3}\NormalTok{<-}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{prob.1W}
-\KeywordTok{summary}\NormalTok{(wt_}\DecValTok{3}\NormalTok{)}
-\NormalTok{IPTW_bin_}\DecValTok{3}\NormalTok{<-}\StringTok{ }\KeywordTok{mean}\NormalTok{( wt_}\DecValTok{3}\OperatorTok{*}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{3}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{*}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{CHD}\OperatorTok{==}\DecValTok{1}\NormalTok{))}
-
-
-\NormalTok{### BIN 4}
-\NormalTok{glm_fit_iptw_bin_}\DecValTok{4}\NormalTok{ <-}\StringTok{ }\KeywordTok{glm}\NormalTok{( cigsPerDay_bin_}\DecValTok{4} \OperatorTok{~}\StringTok{  }\NormalTok{education }\OperatorTok{+}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{gender, }\DataTypeTok{data =}\NormalTok{ fhs_binned_sample, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{)}
-\NormalTok{prob.1W <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(glm_fit_iptw_bin_}\DecValTok{4}\NormalTok{, }\DataTypeTok{type=} \StringTok{"response"}\NormalTok{)}
-\NormalTok{wt_}\DecValTok{4}\NormalTok{<-}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{prob.1W}
-\KeywordTok{summary}\NormalTok{(wt_}\DecValTok{4}\NormalTok{)}
-\NormalTok{IPTW_bin_}\DecValTok{4}\NormalTok{<-}\StringTok{ }\KeywordTok{mean}\NormalTok{( wt_}\DecValTok{4}\OperatorTok{*}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{4}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{*}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{CHD}\OperatorTok{==}\DecValTok{1}\NormalTok{))}
-
-\NormalTok{iptw_bootstrap[i,] =}\StringTok{ }\KeywordTok{c}\NormalTok{(IPTW_bin_}\DecValTok{1}\NormalTok{, IPTW_bin_}\DecValTok{2}\NormalTok{, IPTW_bin_}\DecValTok{3}\NormalTok{, IPTW_bin_}\DecValTok{4}\NormalTok{)}
-\NormalTok{\}}
-
-\NormalTok{average_treatment_effect <-}\StringTok{ }\KeywordTok{c}\NormalTok{()}
-\NormalTok{average_treatment_effect_ci <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DataTypeTok{nrow=}\KeywordTok{length}\NormalTok{(}\KeywordTok{levels}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay)),}\DataTypeTok{ncol=}\DecValTok{2}\NormalTok{)}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(}\KeywordTok{levels}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{cigsPerDay)))\{}
-\NormalTok{  average_treatment_effect[i] <-}\StringTok{ }\KeywordTok{colMeans}\NormalTok{(iptw_bootstrap)[i]}
-\NormalTok{  average_treatment_effect_ci[i,] <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(iptw_bootstrap[,i],}\DataTypeTok{probs=}\KeywordTok{c}\NormalTok{(.}\DecValTok{025}\NormalTok{,.}\DecValTok{975}\NormalTok{))}
-
-\NormalTok{\}}
-
-\KeywordTok{plot}\NormalTok{(average_treatment_effect,}\DataTypeTok{ylab=}\StringTok{"Probability of CHD"}\NormalTok{,}\DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,.}\DecValTok{5}\NormalTok{),}
-     \DataTypeTok{main =} \StringTok{"IPTW"}\NormalTok{)}
-\KeywordTok{points}\NormalTok{(average_treatment_effect_ci[,}\DecValTok{1}\NormalTok{],}\DataTypeTok{col=}\StringTok{'red'}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
-\KeywordTok{points}\NormalTok{(average_treatment_effect_ci[,}\DecValTok{2}\NormalTok{],}\DataTypeTok{col=}\StringTok{'red'}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{framingham_files/figure-latex/unnamed-chunk-8-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{hist}\NormalTok{(wt_}\DecValTok{1}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"Weights of bin 1"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{framingham_files/figure-latex/unnamed-chunk-8-2.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{hist}\NormalTok{(wt_}\DecValTok{2}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"Weights of bin 2"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{framingham_files/figure-latex/unnamed-chunk-8-3.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{hist}\NormalTok{(wt_}\DecValTok{3}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"Weights of bin 3"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{framingham_files/figure-latex/unnamed-chunk-8-4.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{hist}\NormalTok{(wt_}\DecValTok{4}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"Weights of bin 4"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{framingham_files/figure-latex/unnamed-chunk-8-5.pdf}
-
-\subsubsection{Superlearner/TMLE}\label{superlearnertmle}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(}\StringTok{'SuperLearner'}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning: package 'SuperLearner' was built under R version 3.4.4
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: nnls
-\end{verbatim}
-
-\begin{verbatim}
-## Super Learner
-\end{verbatim}
-
-\begin{verbatim}
-## Version: 2.0-24
-\end{verbatim}
-
-\begin{verbatim}
-## Package created on 2018-08-10
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{SL.library<-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"SL.glmnet"}\NormalTok{,}\StringTok{"SL.randomForest"}\NormalTok{,}\StringTok{"SL.nnet"}\NormalTok{,}\StringTok{"SL.earth"}\NormalTok{,}\StringTok{"SL.bayesglm"}\NormalTok{)}
-
-\NormalTok{n_bootstrap_samples <-}\DecValTok{1}
-\NormalTok{tmle_bootstrap_bin_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{c}\NormalTok{()}
-
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_bootstrap_samples)\{}
-  \KeywordTok{set.seed}\NormalTok{(i)}
-\NormalTok{  ### BIN1 TMLE}
-\NormalTok{  fhs_binned_sample <-}\StringTok{ }\NormalTok{fhs_binned[}\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(fhs_binned),}\KeywordTok{nrow}\NormalTok{(fhs_binned),}\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{),]}
-  
-\NormalTok{  X_minus_bin_}\DecValTok{1}\NormalTok{<-}\StringTok{ }\KeywordTok{subset}\NormalTok{(fhs_binned_sample, }\DataTypeTok{select=} \KeywordTok{c}\NormalTok{(}\StringTok{"cigsPerDay_bin_1"}\NormalTok{, }\StringTok{"education"}\NormalTok{, }\StringTok{"age"}\NormalTok{,}\StringTok{"gender"}\NormalTok{) )}
-\NormalTok{  X_minus_bin_}\DecValTok{1}\OperatorTok{$}\NormalTok{age <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(X_minus_bin_}\DecValTok{1}\OperatorTok{$}\NormalTok{age)}
-\NormalTok{  X_minus_bin_1_all_bin_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\NormalTok{X_minus_bin_}\DecValTok{1}
-\NormalTok{  X_minus_bin_1_all_bin_}\DecValTok{1}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\DecValTok{1}
-  
-\NormalTok{  ##CONVERT FACTORS TO NUMERIC FOR SUPERLEARNER}
-  
-  
-\NormalTok{  SL.outcome<-}\StringTok{ }\KeywordTok{SuperLearner}\NormalTok{(}\DataTypeTok{Y=}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{CHD}\OperatorTok{==}\DecValTok{1}\NormalTok{), }\DataTypeTok{X=}\NormalTok{X_minus_bin_}\DecValTok{1}\NormalTok{, }\DataTypeTok{SL.library=}\NormalTok{SL.library, }\DataTypeTok{family=}\StringTok{"binomial"}\NormalTok{)}
-  
-  
-\NormalTok{  expY.givenA1 <-}\StringTok{  }\KeywordTok{predict}\NormalTok{(SL.outcome, }\DataTypeTok{newdata=}\NormalTok{X_minus_bin_1_all_bin_}\DecValTok{1}\NormalTok{)}\OperatorTok{$}\NormalTok{pred}
-\NormalTok{  SL.exposure<-}\StringTok{ }\KeywordTok{SuperLearner}\NormalTok{(}\DataTypeTok{Y=}\KeywordTok{as.numeric}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{1}\OperatorTok{==}\DecValTok{1}\NormalTok{), }\DataTypeTok{X=}\KeywordTok{subset}\NormalTok{(X_minus_bin_}\DecValTok{1}\NormalTok{, }\DataTypeTok{select=} \OperatorTok{-}\KeywordTok{c}\NormalTok{(cigsPerDay_bin_}\DecValTok{1}\NormalTok{)),}\DataTypeTok{SL.library=}\NormalTok{SL.library, }\DataTypeTok{family=}\StringTok{"binomial"}\NormalTok{)}
-\NormalTok{  probA1.givenW<-}\StringTok{ }\NormalTok{SL.exposure}\OperatorTok{$}\NormalTok{SL.predict}
-\NormalTok{  H.AW<-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{1}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{/}\NormalTok{probA1.givenW}
-\NormalTok{  logitUpdate<-}\StringTok{ }\KeywordTok{glm}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{CHD }\OperatorTok{~}\StringTok{ }\OperatorTok{-}\DecValTok{1} \OperatorTok{+}\KeywordTok{offset}\NormalTok{(}\KeywordTok{qlogis}\NormalTok{(expY.givenA1)) }\OperatorTok{+}\StringTok{ }\NormalTok{H.AW, }\DataTypeTok{family=}\StringTok{'binomial'}\NormalTok{)}
-\NormalTok{  epsilon<-}\StringTok{ }\NormalTok{logitUpdate}\OperatorTok{$}\NormalTok{coef}
-\NormalTok{  expY.givenAW.star<-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(}\KeywordTok{qlogis}\NormalTok{(expY.givenA1)}\OperatorTok{+}\StringTok{ }\NormalTok{epsilon}\OperatorTok{*}\NormalTok{H.AW)}
-\NormalTok{  PsiHat.TMLE_bin_}\DecValTok{1}\NormalTok{<-}\StringTok{ }\KeywordTok{mean}\NormalTok{(expY.givenAW.star)}\CommentTok{#- expY.given0W.star)}
-\NormalTok{  tmle_bootstrap_bin_}\DecValTok{1}\NormalTok{[i] <-}\StringTok{ }\NormalTok{PsiHat.TMLE_bin_}\DecValTok{1}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Loading required package: arm
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: package 'arm' was built under R version 3.4.4
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: MASS
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## Attaching package: 'MASS'
-\end{verbatim}
-
-\begin{verbatim}
-## The following object is masked from 'package:dplyr':
-## 
-##     select
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: Matrix
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: lme4
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: package 'lme4' was built under R version 3.4.4
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## Attaching package: 'lme4'
-\end{verbatim}
-
-\begin{verbatim}
-## The following object is masked from 'package:nlme':
-## 
-##     lmList
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## arm (Version 1.10-1, built: 2018-4-12)
-\end{verbatim}
-
-\begin{verbatim}
-## Working directory is /Users/gcgibson/causal_project/finalproj
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: glmnet
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: foreach
-\end{verbatim}
-
-\begin{verbatim}
-## Loaded glmnet 2.0-12
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: randomForest
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: package 'randomForest' was built under R version 3.4.4
-\end{verbatim}
-
-\begin{verbatim}
-## randomForest 4.6-14
-\end{verbatim}
-
-\begin{verbatim}
-## Type rfNews() to see new features/changes/bug fixes.
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## Attaching package: 'randomForest'
-\end{verbatim}
-
-\begin{verbatim}
-## The following object is masked from 'package:dplyr':
-## 
-##     combine
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: earth
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: package 'earth' was built under R version 3.4.4
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: plotmo
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: package 'plotmo' was built under R version 3.4.4
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: plotrix
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## Attaching package: 'plotrix'
-\end{verbatim}
-
-\begin{verbatim}
-## The following object is masked from 'package:arm':
-## 
-##     rescale
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: TeachingDemos
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{  #### BIN 2 TMLE}
-
-\NormalTok{tmle_bootstrap_bin_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{c}\NormalTok{()}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_bootstrap_samples)\{}
-  \KeywordTok{set.seed}\NormalTok{(i)}
-\NormalTok{  X_minus_bin_}\DecValTok{2}\NormalTok{<-}\StringTok{ }\KeywordTok{subset}\NormalTok{(fhs_binned_sample, }\DataTypeTok{select=} \KeywordTok{c}\NormalTok{(}\StringTok{"cigsPerDay_bin_2"}\NormalTok{, }\StringTok{"education"}\NormalTok{, }\StringTok{"age"}\NormalTok{,}\StringTok{"gender"}\NormalTok{) )}
-\NormalTok{  X_minus_bin_}\DecValTok{2}\OperatorTok{$}\NormalTok{age <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(X_minus_bin_}\DecValTok{2}\OperatorTok{$}\NormalTok{age)}
-\NormalTok{  X_minus_bin_2_all_bin_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\NormalTok{X_minus_bin_}\DecValTok{2}
-\NormalTok{  X_minus_bin_2_all_bin_}\DecValTok{2}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\DecValTok{1}
-  
-\NormalTok{  SL.outcome<-}\StringTok{ }\KeywordTok{SuperLearner}\NormalTok{(}\DataTypeTok{Y=}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{CHD}\OperatorTok{==}\DecValTok{1}\NormalTok{), }\DataTypeTok{X=}\NormalTok{X_minus_bin_}\DecValTok{2}\NormalTok{, }\DataTypeTok{SL.library=}\NormalTok{SL.library, }\DataTypeTok{family=}\StringTok{"binomial"}\NormalTok{)}
-\NormalTok{  expY.givenA1 <-}\StringTok{  }\KeywordTok{predict}\NormalTok{(SL.outcome, }\DataTypeTok{newdata=}\NormalTok{X_minus_bin_2_all_bin_}\DecValTok{2}\NormalTok{)}\OperatorTok{$}\NormalTok{pred}
-\NormalTok{  SL.exposure<-}\StringTok{ }\KeywordTok{SuperLearner}\NormalTok{(}\DataTypeTok{Y=}\KeywordTok{as.numeric}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{2}\OperatorTok{==}\DecValTok{1}\NormalTok{), }\DataTypeTok{X=}\KeywordTok{subset}\NormalTok{(X_minus_bin_}\DecValTok{2}\NormalTok{, }\DataTypeTok{select=} \OperatorTok{-}\KeywordTok{c}\NormalTok{(cigsPerDay_bin_}\DecValTok{2}\NormalTok{)),}\DataTypeTok{SL.library=}\NormalTok{SL.library, }\DataTypeTok{family=}\StringTok{"binomial"}\NormalTok{)}
-\NormalTok{  probA1.givenW<-}\StringTok{ }\NormalTok{SL.exposure}\OperatorTok{$}\NormalTok{SL.predict}
-\NormalTok{  H.AW<-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{2}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{/}\NormalTok{probA1.givenW}
-\NormalTok{  logitUpdate<-}\StringTok{ }\KeywordTok{glm}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{CHD }\OperatorTok{~}\StringTok{ }\OperatorTok{-}\DecValTok{1} \OperatorTok{+}\KeywordTok{offset}\NormalTok{(}\KeywordTok{qlogis}\NormalTok{(expY.givenA1)) }\OperatorTok{+}\StringTok{ }\NormalTok{H.AW, }\DataTypeTok{family=}\StringTok{'binomial'}\NormalTok{)}
-\NormalTok{  epsilon<-}\StringTok{ }\NormalTok{logitUpdate}\OperatorTok{$}\NormalTok{coef}
-\NormalTok{  expY.givenAW.star<-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(}\KeywordTok{qlogis}\NormalTok{(expY.givenA1)}\OperatorTok{+}\StringTok{ }\NormalTok{epsilon}\OperatorTok{*}\NormalTok{H.AW)}
-\NormalTok{  PsiHat.TMLE_bin_}\DecValTok{2}\NormalTok{<-}\StringTok{ }\KeywordTok{mean}\NormalTok{(expY.givenAW.star)}\CommentTok{#- expY.given0W.star)}
-\NormalTok{  tmle_bootstrap_bin_}\DecValTok{2}\NormalTok{[i] <-}\StringTok{ }\NormalTok{PsiHat.TMLE_bin_}\DecValTok{2}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{tmle_bootstrap_bin_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\KeywordTok{c}\NormalTok{()}
-
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_bootstrap_samples)\{}
-\NormalTok{  #### BIN 3 TMLE }
-  
-\NormalTok{  X_minus_bin_}\DecValTok{3}\NormalTok{<-}\StringTok{ }\KeywordTok{subset}\NormalTok{(fhs_binned_sample, }\DataTypeTok{select=} \KeywordTok{c}\NormalTok{(}\StringTok{"cigsPerDay_bin_3"}\NormalTok{, }\StringTok{"education"}\NormalTok{, }\StringTok{"age"}\NormalTok{,}\StringTok{"gender"}\NormalTok{) )}
-\NormalTok{  X_minus_bin_}\DecValTok{3}\OperatorTok{$}\NormalTok{age <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(X_minus_bin_}\DecValTok{3}\OperatorTok{$}\NormalTok{age)}
-  
-\NormalTok{  X_minus_bin_3_all_bin_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\NormalTok{X_minus_bin_}\DecValTok{3}
-\NormalTok{  X_minus_bin_3_all_bin_}\DecValTok{3}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\DecValTok{1}
-\NormalTok{  SL.outcome<-}\StringTok{ }\KeywordTok{SuperLearner}\NormalTok{(}\DataTypeTok{Y=}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{CHD}\OperatorTok{==}\DecValTok{1}\NormalTok{), }\DataTypeTok{X=}\NormalTok{X_minus_bin_}\DecValTok{3}\NormalTok{, }\DataTypeTok{SL.library=}\NormalTok{SL.library, }\DataTypeTok{family=}\StringTok{"binomial"}\NormalTok{)}
-\NormalTok{  expY.givenA1 <-}\StringTok{  }\KeywordTok{predict}\NormalTok{(SL.outcome, }\DataTypeTok{newdata=}\NormalTok{X_minus_bin_3_all_bin_}\DecValTok{3}\NormalTok{)}\OperatorTok{$}\NormalTok{pred}
-\NormalTok{  SL.exposure<-}\StringTok{ }\KeywordTok{SuperLearner}\NormalTok{(}\DataTypeTok{Y=}\KeywordTok{as.numeric}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{3}\OperatorTok{==}\DecValTok{1}\NormalTok{), }\DataTypeTok{X=}\KeywordTok{subset}\NormalTok{(X_minus_bin_}\DecValTok{3}\NormalTok{, }\DataTypeTok{select=} \OperatorTok{-}\KeywordTok{c}\NormalTok{(cigsPerDay_bin_}\DecValTok{3}\NormalTok{)),}\DataTypeTok{SL.library=}\NormalTok{SL.library, }\DataTypeTok{family=}\StringTok{"binomial"}\NormalTok{)}
-\NormalTok{  probA1.givenW<-}\StringTok{ }\NormalTok{SL.exposure}\OperatorTok{$}\NormalTok{SL.predict}
-\NormalTok{  H.AW<-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{3}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{/}\NormalTok{probA1.givenW}
-\NormalTok{  logitUpdate<-}\StringTok{ }\KeywordTok{glm}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{CHD }\OperatorTok{~}\StringTok{ }\OperatorTok{-}\DecValTok{1} \OperatorTok{+}\KeywordTok{offset}\NormalTok{(}\KeywordTok{qlogis}\NormalTok{(expY.givenA1)) }\OperatorTok{+}\StringTok{ }\NormalTok{H.AW, }\DataTypeTok{family=}\StringTok{'binomial'}\NormalTok{)}
-\NormalTok{  epsilon<-}\StringTok{ }\NormalTok{logitUpdate}\OperatorTok{$}\NormalTok{coef}
-\NormalTok{  expY.givenAW.star<-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(}\KeywordTok{qlogis}\NormalTok{(expY.givenA1)}\OperatorTok{+}\StringTok{ }\NormalTok{epsilon}\OperatorTok{*}\NormalTok{H.AW)}
-\NormalTok{  PsiHat.TMLE_bin_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(expY.givenAW.star)}
-\NormalTok{  tmle_bootstrap_bin_}\DecValTok{3}\NormalTok{[i] <-}\StringTok{ }\NormalTok{PsiHat.TMLE_bin_}\DecValTok{3}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{  #### BIN 4  TMLE }
-\NormalTok{tmle_bootstrap_bin_}\DecValTok{4}\NormalTok{ <-}\StringTok{ }\KeywordTok{c}\NormalTok{()}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n_bootstrap_samples)\{}
-
-\NormalTok{  X_minus_bin_}\DecValTok{4}\NormalTok{<-}\StringTok{ }\KeywordTok{subset}\NormalTok{(fhs_binned_sample, }\DataTypeTok{select=} \KeywordTok{c}\NormalTok{(}\StringTok{"cigsPerDay_bin_4"}\NormalTok{, }\StringTok{"education"}\NormalTok{, }\StringTok{"age"}\NormalTok{,}\StringTok{"gender"}\NormalTok{) )}
-\NormalTok{  X_minus_bin_}\DecValTok{4}\OperatorTok{$}\NormalTok{age <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(X_minus_bin_}\DecValTok{4}\OperatorTok{$}\NormalTok{age)}
-  
-\NormalTok{  X_minus_bin_4_all_bin_}\DecValTok{4}\NormalTok{ <-}\StringTok{ }\NormalTok{X_minus_bin_}\DecValTok{4}
-\NormalTok{  X_minus_bin_4_all_bin_}\DecValTok{4}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{4}\NormalTok{ <-}\StringTok{ }\DecValTok{1}
-\NormalTok{  SL.outcome<-}\StringTok{ }\KeywordTok{SuperLearner}\NormalTok{(}\DataTypeTok{Y=}\KeywordTok{as.numeric}\NormalTok{(fhs_binned_sample}\OperatorTok{$}\NormalTok{CHD}\OperatorTok{==}\DecValTok{1}\NormalTok{), }\DataTypeTok{X=}\NormalTok{X_minus_bin_}\DecValTok{4}\NormalTok{, }\DataTypeTok{SL.library=}\NormalTok{SL.library, }\DataTypeTok{family=}\StringTok{"binomial"}\NormalTok{)}
-\NormalTok{  expY.givenA1 <-}\StringTok{  }\KeywordTok{predict}\NormalTok{(SL.outcome, }\DataTypeTok{newdata=}\NormalTok{X_minus_bin_4_all_bin_}\DecValTok{4}\NormalTok{)}\OperatorTok{$}\NormalTok{pred}
-\NormalTok{  SL.exposure<-}\StringTok{ }\KeywordTok{SuperLearner}\NormalTok{(}\DataTypeTok{Y=}\KeywordTok{as.numeric}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{4}\OperatorTok{==}\DecValTok{1}\NormalTok{), }\DataTypeTok{X=}\KeywordTok{subset}\NormalTok{(X_minus_bin_}\DecValTok{4}\NormalTok{, }\DataTypeTok{select=} \OperatorTok{-}\KeywordTok{c}\NormalTok{(cigsPerDay_bin_}\DecValTok{4}\NormalTok{)),}\DataTypeTok{SL.library=}\NormalTok{SL.library, }\DataTypeTok{family=}\StringTok{"binomial"}\NormalTok{)}
-\NormalTok{  probA1.givenW<-}\StringTok{ }\NormalTok{SL.exposure}\OperatorTok{$}\NormalTok{SL.predict}
-\NormalTok{  H.AW<-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay_bin_}\DecValTok{4}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{/}\NormalTok{probA1.givenW}
-\NormalTok{  logitUpdate<-}\StringTok{ }\KeywordTok{glm}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{CHD }\OperatorTok{~}\StringTok{ }\OperatorTok{-}\DecValTok{1} \OperatorTok{+}\KeywordTok{offset}\NormalTok{(}\KeywordTok{qlogis}\NormalTok{(expY.givenA1)) }\OperatorTok{+}\StringTok{ }\NormalTok{H.AW, }\DataTypeTok{family=}\StringTok{'binomial'}\NormalTok{)}
-\NormalTok{  epsilon<-}\StringTok{ }\NormalTok{logitUpdate}\OperatorTok{$}\NormalTok{coef}
-\NormalTok{  expY.givenAW.star<-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(}\KeywordTok{qlogis}\NormalTok{(expY.givenA1)}\OperatorTok{+}\StringTok{ }\NormalTok{epsilon}\OperatorTok{*}\NormalTok{H.AW)}
-\NormalTok{  PsiHat.TMLE_bin_}\DecValTok{4}\NormalTok{ <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(expY.givenAW.star)}
-\NormalTok{  tmle_bootstrap_bin_}\DecValTok{4}\NormalTok{[i] <-}\StringTok{ }\NormalTok{PsiHat.TMLE_bin_}\DecValTok{4}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{tmle_bootstrap <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(tmle_bootstrap_bin_}\DecValTok{1}\NormalTok{,tmle_bootstrap_bin_}\DecValTok{2}\NormalTok{,tmle_bootstrap_bin_}\DecValTok{3}\NormalTok{,tmle_bootstrap_bin_}\DecValTok{4}\NormalTok{)}
-
-\NormalTok{average_treatment_effect <-}\StringTok{ }\KeywordTok{c}\NormalTok{()}
-\NormalTok{average_treatment_effect_ci <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{,}\DataTypeTok{nrow=}\KeywordTok{length}\NormalTok{(}\KeywordTok{levels}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay)),}\DataTypeTok{ncol=}\DecValTok{2}\NormalTok{)}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(}\KeywordTok{levels}\NormalTok{(fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay)))\{}
-\NormalTok{  average_treatment_effect[i] <-}\StringTok{ }\KeywordTok{colMeans}\NormalTok{(tmle_bootstrap)[i]}
-\NormalTok{  average_treatment_effect_ci[i,] <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(tmle_bootstrap[,i],}\DataTypeTok{probs=}\KeywordTok{c}\NormalTok{(.}\DecValTok{025}\NormalTok{,.}\DecValTok{975}\NormalTok{))}
-
-\NormalTok{\}}
-
-\KeywordTok{plot}\NormalTok{(average_treatment_effect,}\DataTypeTok{ylab=}\StringTok{"Probability of CHD"}\NormalTok{,}\DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,.}\DecValTok{5}\NormalTok{),}
-     \DataTypeTok{main =} \StringTok{"TMLE"}\NormalTok{)}
-\KeywordTok{points}\NormalTok{(average_treatment_effect_ci[,}\DecValTok{1}\NormalTok{],}\DataTypeTok{col=}\StringTok{'red'}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
-\KeywordTok{points}\NormalTok{(average_treatment_effect_ci[,}\DecValTok{2}\NormalTok{],}\DataTypeTok{col=}\StringTok{'red'}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{framingham_files/figure-latex/unnamed-chunk-13-1.pdf}
-
+\hypertarget{step-7.-result-interpretation}{%
 \subsection{Step 7. Result
-Interpretation}\label{step-7.-result-interpretation}
+Interpretation}\label{step-7.-result-interpretation}}
 
-What is the statistical interpretation of your analyses? Discuss
-differences (or lack thereof) in the estimates provided by the different
-estimators. What is the causal interpretation of your results and how
-plausible is it? What are key limitations of your analysis? How might
-these results (if at all) inform policy, understanding, and/or the
-design of future studies?
+\hypertarget{statistical}{%
+\subsubsection{Statistical}\label{statistical}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(fhs_binned[fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay }\OperatorTok{==}\StringTok{ "[10, 20)"} \OperatorTok{&}\StringTok{ }\NormalTok{fhs_binned}\OperatorTok{$}\NormalTok{age }\OperatorTok{==}\StringTok{ "[32, 42)"}\NormalTok{,]}\OperatorTok{$}\NormalTok{CHD)}\OperatorTok{-}\DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+From the estimation of our statistical model \(\mathcal{M}\), we found
+that the probability of developing coronary heart disease increases as
+the binned exposure (\texttt{cigsPerDay}) increases from, standardadized
+to the distribution of baseline covariates \(W\). However, in bin \#2,
+corresponding to \texttt{cigsPerDay} \(\in [1, 10)\), we found what
+seems to be a ``protective'' effect, in which smoking less than a pack
+of cigarettes as day is associated with a lower risk of CHD than not
+smoking at all. The difference risk in this bin is estimated at around
+0.10-0.11, compared with . We argue that this may be due to
+\textit{non-differential misclassification}, since participants may have
+not self-reported smoking due to the negative stigma associated with it.
+For \texttt{cigsPerDay} \(\geq\) 20, the probability of CHD plateaus
+near 0.2 (for the conditional mean outcome and IPTW estimators) and 0.16
+(for TMLE).
 
-\begin{verbatim}
-## [1] 0.05454545
-\end{verbatim}
+\hypertarget{counterfactual}{%
+\subsubsection{Counterfactual}\label{counterfactual}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(fhs_binned[fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay }\OperatorTok{==}\StringTok{ "[0, 1)"} \OperatorTok{&}\StringTok{ }\NormalTok{fhs_binned}\OperatorTok{$}\NormalTok{age }\OperatorTok{==}\StringTok{ "[32, 42)"}\NormalTok{,]}\OperatorTok{$}\NormalTok{CHD)}\OperatorTok{-}\DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+The estimated effect of the exposure is the counterfactual probability
+of developiong coronary heart disease in 10 years under the exposure
+category \texttt{cigsPerDay} (\(A_i, i \in \{1, 2, 3, 4 \}\)), with the
+assumptions that conditioning on the baseline covariates \(W\) (age,
+sex, \& education) and assumpting certain independence assumptions
+satisfies the backdoor criterion, and said independence assumptions and
+positivity holds. The observed general increase in estimated risk of CHD
+as the (binned) exposure increases is certainly plausible; however, the
+estimated reduction in risk of CHD for \texttt{cigsPerDay}
+\(\in [1, 10)\) is less plausible, again perhaps due to biased data from
+non-differential misclassification on the exposure, or could in fact be
+evidence for a protective effect of low degrees of smoking on risk of
+CHD.
 
-\begin{verbatim}
-## [1] 0.02479339
-\end{verbatim}
+\hypertarget{limitations}{%
+\subsubsection{Limitations}\label{limitations}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(fhs_binned[fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay }\OperatorTok{==}\StringTok{ "[1, 10)"} \OperatorTok{&}\StringTok{ }\NormalTok{fhs_binned}\OperatorTok{$}\NormalTok{age }\OperatorTok{==}\StringTok{ "[56, 70]"}\NormalTok{,]}\OperatorTok{$}\NormalTok{CHD)}\OperatorTok{-}\DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+It is not likely that our target causal parameter is identifiable due to
+violations of the chosen independence assumptions, and thus our
+counterfactual estimation should not be accepted without some healthy
+skepticism. Many unmeasured confounders are possible, including
+pre-existing medical conditions not considered by the Framingham Heart
+Study patient surveys, diet and exercise habits, family history, genetic
+factors, and more. Future studies might expand the set of measured
+variables to include such information. As mentioned, we are also
+concerned about potential issues with reporting bias in the data.
+Finally, we did not have access to time-varying aspects of the data;
+e.g., smoking habits and biomarkers before or after baseline
+measurements were taken, many of which could contain information
+relevant to prediction of CHD outcomes.
 
-\begin{verbatim}
-## [1] 0.15
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(fhs_binned[fhs_binned}\OperatorTok{$}\NormalTok{cigsPerDay }\OperatorTok{==}\StringTok{ "[10, 20)"} \OperatorTok{&}\StringTok{ }\NormalTok{fhs_binned}\OperatorTok{$}\NormalTok{age }\OperatorTok{==}\StringTok{ "[56, 70]"}\NormalTok{,]}\OperatorTok{$}\NormalTok{CHD)}\OperatorTok{-}\DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.3378378
-\end{verbatim}
-
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=0.5\linewidth]{./effect} 
 
@@ -1020,7 +517,7 @@ design of future studies?
 \caption{Expected Outcome}\label{fig:fig2}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=0.5\linewidth]{./pos_violation2} 
 
@@ -1029,105 +526,66 @@ design of future studies?
 \caption{Expected Outcome}\label{fig:fig3}
 \end{figure}
 
-\subsection{Statistical:}\label{statistical}
-
-The probability of developing CHD in 10 years increases as theexposure
-increases among subjects with similar baseline
-covariatesForcigsPerDay∈{[}1,10), the exposure appears to have
-a``protective effect''; this may be due to reporting bias /
-practicalpositivity violationsFor more than 20 cigarettes, the exposure
-effect starts to plateau,approaching a constant effect in risk of
-CHDTMLE estimates more conservative than conditional mean \& IPTW
-
-\subsection{Counterfactual:}\label{counterfactual}
-
-The estimated effect of the exposure is the counterfactual probability
-of CHD in 10 years under the exposure
-category``cigsPerDay'',\(A_i \ i \in \{0,1,2,3\}\)), with the
-assumptions thatW(age, sex, BMI, education, and diabetes) satisfy the
-backdoorcriterion + positivity.Plausibility:As expected, we observed a
-general increase in estimated risk ofCHD as the (binned) exposure
-(cigsPerDay) is increased.Less plausible is the estimated reduction in
-risk of CHD for \(cigsPerDay \in [0,10)\); this may be due to reporting
-bias, or may infact be evidence for a ``protective effect'' of smoking
-on risk of CHD.
-
 \newpage
 
-\subsection{Team Member Contribution}\label{team-member-contribution}
+\hypertarget{team-member-contribution}{%
+\subsection{Team Member Contribution}\label{team-member-contribution}}
 
-\subsubsection{Michael Attah}\label{michael-attah}
+\begin{table}[h!]
+  \begin{tabular}{|l|l|}
+  \hline
+    Member & Contributions \\ \hline
+    Michael Attah & - group discussion of causal question \\
+      & - design of causal graph \\
+      & - design of descriptive table \\
+      & - categorize covariates: Z\\
+      & - interpretation: causal\\ 
+      & - references \\ \hline
+    Bianca Doone & - group discussion of causal question \\
+      & - design of causal graph \\
+      & - time-varying assumptions \\
+      & - chi-squared test of indepedence\\
+      & - categorize covariates: W (age, education, gender) \\
+      & - bootstrap confidence intervals: IPTW \\
+      & - interpretation: statistical \\
+      & - limitations \\ \hline
+    Casey Graham & - group discussion of causal question \\
+      & - design of causal graph \\
+      & - categorize covariates: cigsPerDay \\
+      & - computation of simple substitution \\
+      & - computation of IPTW \\
+      & - computation of Superlearner/TMLE \\ 
+      & - bootstrap confidence intervals: TMLE, GLM \\ \hline
+    Daniel Saunders & - group discussion of causal question \\
+      & - design of causal graph \\
+      & - design of descriptive table \\
+      & - statistical estimand: G-computation \\
+      & - bootstrap confidence intervals: TMLE, simple substitution\\ 
+      & - statistical estimand: G-computation \\ \hline
+    Nutcha Wattanachit & - group causal question \\
+      & - design of causal graph \\
+      & - background story and target population \\
+      & - specifying causal parameter \\
+      & - design of working SCM ($\mathcal{M}^{**}$) \\
+      & - specify observed data and link to SCM \\
+      & - identifiability: randomization assumption \\
+      & - identifiability: positivity assumption \\ \hline
+  \end{tabular}
+\end{table}
 
-\begin{itemize}
-\item Causal graph
-\item Causal question
-\item Estimation...
-\item Interpretation?
-\item etc
-\end{itemize}
-
-\subsubsection{Bianca Doone}\label{bianca-doone}
-
-\begin{itemize}
-
-\item Bootstrap confidence interval
-\item Data Retrieval 
-\item Causal graph
-\item Causal question
-\item Causal Parameter
-\item Specify observed data and link to SCM
-\item Descriptive table
-\item Put together Table 1
-
-\end{itemize}
-
-\subsubsection{Casey Graham}\label{casey-graham}
-
-\begin{itemize}
-\item  Categorize covariates 
-\item  Causal Parameter
-\item  Conditional mean outcome
-\item  IPTW
-\item  Superlearner/TMLE
-\item  Causal graph
-\item  Causal question
-\item  Statistical Estimand: G-comp
-\item  etc
-
-\end{itemize}
-
-\subsubsection{Daniel Saunders}\label{daniel-saunders}
-
-\begin{itemize}
-\item  Data exploration
-\item  Estimation...
-\item  Interpretation?
-\item  Causal graph
-\item  Causal question
-\item  etc
-
-\end{itemize}
-
-\subsubsection{Nutcha Wattanachit}\label{nutcha-wattanachit}
-
-\begin{itemize}
-\item  Background story 
-\item  Descriptive table
-\item  Causal graph
-\item  Causal question
-\item  Causal Parameter
-\item  Specify observed data and link to SCM
-\item  Identifiability: Randomization assumption
-\item  Identifiability: Positivity assumption
-\item  Statistical Estimand: G-comp
-
-\end{itemize}
-
-\subsection{References}\label{references}
+\hypertarget{references}{%
+\subsection{References}\label{references}}
 
 Boston University \& the National Heart, Lung, \& Blood Institute,
-Framingham Heart Study. 5 Dec. 2018:
+Framingham Heart Study. 5 Dec.~2018:
 \url{https://www.framinghamheartstudy.org}
+
+World Health Organization. (2018). Body mass index - BMI. 29 Nov.~2018:
+\url{http://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi}
+
+The National Heart, Lung, \& Blood Institute, ATP III Guidelines
+At-A-Glance. 29 Nov.~2018:
+\url{https://www.nhlbi.nih.gov/files/docs/guidelines/atglance.pdf}
 
 
 \end{document}

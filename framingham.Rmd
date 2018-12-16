@@ -10,7 +10,7 @@ output:
            keep_tex: yes
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,fig.pos = 'h')
+knitr::opts_chunk$set(fig.pos = 'h',warning = FALSE,message = FALSE)
 ```
 
 ```{r,include=FALSE}
@@ -68,7 +68,7 @@ There are no exclusion restrictions or assumptions about functional form.
 
 #### Causal Graph
 
-```{r fig1, fig.align='center',fig.cap="Causal Graph for the SCM", echo=FALSE, out.width='50%'}
+```{r fig1, fig.align='center',fig.cap="Causal Graph for the SCM", echo=FALSE, out.width='60%'}
 knitr::include_graphics("./dags/dag_causal.PNG")
 ```
 
@@ -164,16 +164,15 @@ Since we made no independence assumptions on our exogenous background factors, w
 
 #### 1) Randomization Assumption:
 
-Conditional on $W$, the counterfactual outcome is independent of the observed treatment: $Y \perp  A|W$.
-```{r figc, fig.align='center',fig.cap="Causal Graph for an augmented SCM", echo=FALSE,out.width='50%'}
+Conditional on $W$, the counterfactual outcome is independent of the observed treatment: $Y \perp  A|W$. In this augmented/working SCM ($\mathcal{M^{**}}$), the unmeasured background factor of $A$ (cigarettes smoked per day) is independent of the unmeasured background factor of $Y$ (10yr CHD), the unmeasured background factor of $W$ (baseline age, gender, education, diabetes, BMI), and the unmeasured background factor of $Z$ (prevalence of stroke, hypertension, blood pressure, blood pressure medication, heart rate).
+
+Since $W$,$Z$, and $Y$ include SES and biological factors that affect human health, we aviod assuming independence between their unmeasured background factors. Thus, we consider it is more plausible to make the indepedence assumptions listed. We do not adjust the mediator $Z$ to avoid opening a backdoor path. Under $M^{**}$, the backdoor criterion holds conditional on $W$. Additional data on factors that affect heath status and determinants could help with identifiability, but those factors are not well-understood. 
+
+```{r figc, fig.align='center',fig.cap="Causal Graph for an augmented SCM", echo=FALSE,out.width='70%'}
 knitr::include_graphics("./dags/augmented_dag.PNG")
 ```
 
 $$U_A\perp U_Y,U_A\perp U_W,U_A\perp U_Z$$
-
-In this augmented/working SCM ($\mathcal{M^{**}}$), the unmeasured background factor of $A$ (cigarettes smoked per day) is independent of the unmeasured background factor of $Y$ (10yr CHD), the unmeasured background factor of $W$ (baseline age, gender, education, diabetes, BMI), and the unmeasured background factor of $Z$ (prevalence of stroke, hypertension, blood pressure, blood pressure medication, heart rate).
-
-Since $W$,$Z$, and $Y$ include SES and biological factors that affect human health, we aviod assuming independence between their unmeasured background factors. Thus, we consider it is more plausible to make the indepedence assumptions listed. We do not adjust the mediator $Z$ to avoid opening a backdoor path. Under $M^{**}$, the backdoor criterion holds conditional on $W$. Additional data on factors that affect heath status and determinants could help with identifiability, but those factors are not well-understood. 
 
 #### 2) Positivity Assumption:
 
@@ -271,7 +270,7 @@ $$
 ## Step 6. Estimation
 
 ### Classical Model Based on Chi Squared
-```{r}
+```{r, echo=FALSE}
 glm_fit <- glm(CHD ~ factor(cigsPerDay) + education + age + gender + bmi + totChol+prevalentStroke+prevalentHyp+BP+diabetes, data = fhs_binned, family = "binomial")
 
 odds_ratio_1 <-mean(predict(glm_fit,newdata = fhs_binned[fhs_binned$cigsPerDay=="[0, 1)",],na.action = na.omit) )
@@ -316,7 +315,7 @@ traditional_upper_ci <- c(upper_1,upper_2,upper_3,upper_4)
 
 ### Simple Substitution 
 
-```{r}
+```{r, echo=FALSE}
 library(mgcv)
 
 n_bootstrap_samples <- 1000
@@ -350,7 +349,7 @@ for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
 ```
 
 ### IPTW
-```{r}
+```{r, echo=FALSE}
 n_bootstrap_samples <- 1000
 iptw_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
 iptw_HT_bootstrap <- matrix(NA, nrow=n_bootstrap_samples,ncol=4)
@@ -431,25 +430,25 @@ for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
   
 }
 
-
-
-hist(wt_1,xlab="Weights of bin 1")
-hist(wt_2,xlab="Weights of bin 2")
-hist(wt_3,xlab="Weights of bin 3")
-hist(wt_4,xlab="Weights of bin 4")
 ```
 
-
+```{r fig iptw, fig.align='center',fig.cap="Distribution of Weights", echo=FALSE, out.width='70%'}
+par(mfrow=c(2,2))
+hist(wt_1,xlab="Weights of bin 1", main = "")
+hist(wt_2,xlab="Weights of bin 2", main = "")
+hist(wt_3,xlab="Weights of bin 3", main = "")
+hist(wt_4,xlab="Weights of bin 4", main = "")
+```
 ### Superlearner/TMLE
 
-```{r}
+```{r, echo=FALSE}
 library('SuperLearner')
 SL.library<- c("SL.glmnet","SL.randomForest","SL.nnet","SL.earth")
 tmle_ic <- c()
 n_bootstrap_samples <-1000
 ```
 
-```{r,eval=FALSE}
+```{r, echo=FALSE,eval=FALSE}
 tmle_bootstrap_bin_1 <- c()
 for (i in 1:n_bootstrap_samples){
   set.seed(i)
@@ -484,7 +483,7 @@ for (i in 1:n_bootstrap_samples){
 ```
 
 
-```{r,eval=FALSE}
+```{r,eval=FALSE, echo=FALSE}
 #### BIN 2 TMLE
 tmle_bootstrap_bin_2 <- c()
 for (i in 1:n_bootstrap_samples){
@@ -510,7 +509,7 @@ for (i in 1:n_bootstrap_samples){
 ```
 
 
-```{r,eval=FALSE}
+```{r,eval=FALSE, echo=FALSE}
 #### BIN 3 TMLE
 tmle_bootstrap_bin_3 <- c()
 for (i in 1:n_bootstrap_samples){
@@ -535,7 +534,7 @@ for (i in 1:n_bootstrap_samples){
 ```
   
   
-```{r,eval=FALSE}
+```{r, echo=FALSE,eval=FALSE}
 #### BIN 4  TMLE 
 tmle_bootstrap_bin_4 <- c()
 for (i in 1:n_bootstrap_samples){
@@ -560,7 +559,7 @@ for (i in 1:n_bootstrap_samples){
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 tmle_bootstrap_bin_1 <- read.csv("tmle_bootstrap_bin_1.csv")
 tmle_bootstrap_bin_2 <- read.csv("tmle_bootstrap_bin_2.csv")
 tmle_bootstrap_bin_3 <- read.csv("tmle_bootstrap_bin_3.csv")
@@ -610,7 +609,7 @@ The estimated effect of the exposure is the counterfactual probability of develo
 
 It is not likely that our target causal parameter is identifiable due to violations of the chosen independence assumptions, and thus our counterfactual estimation should not be accepted without some healthy skepticism. Many unmeasured confounders are possible, including pre-existing medical conditions not considered by the Framingham Heart Study patient surveys, diet and exercise habits, family history, genetic factors, and more. Future studies might expand the set of measured variables to include such information. As mentioned, we are also concerned about potential issues with reporting bias in the data. Finally, we did not have access to time-varying aspects of the data; e.g., smoking habits and biomarkers before or after baseline measurements were taken, many of which could contain information relevant to prediction of CHD outcomes.
 
-```{r}
+```{r,echo=FALSE,include=FALSE}
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[10, 20)" & fhs_binned$age == "[32, 42)",]$CHD)-1)
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[0, 1)" & fhs_binned$age == "[32, 42)",]$CHD)-1)
 mean(as.numeric(fhs_binned[fhs_binned$cigsPerDay == "[1, 10)" & fhs_binned$age == "[56, 70]",]$CHD)-1)
@@ -629,7 +628,7 @@ knitr::include_graphics("./pos_violation2.png")
 \newpage
 
 ## Team Member Contribution
-\begin{table}[h]
+\begin{table}[h!]
   \begin{tabular}{|l|l|}
   \hline
     Member & Contributions \\ \hline
