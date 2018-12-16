@@ -276,9 +276,13 @@ In order to estimate the causal effect of smoking on risk of CHD we evaluate 6 s
 ### Classical Model Based on Chi-Squared
 In order to comapre the causal based estimators to traditional statistics, we first fit a generalized linear model as follows. 
 
-$$logit(CHD) \sim \beta_0 + \beta_1*\text{education} + \beta_2*\text{age} +\beta_3*\text{total cholesterol} $$
+$$
+\begin{aligned}
+logit(CHD) &\sim \beta_0 + \beta_1*\text{education} + \beta_2*\text{age} +\beta_3*\text{total cholesterol}\\
+&+\beta_4*\text{prevelant Hyp} + \beta_5*\text{BP} + \beta_6*\text{diabetes} + \epsilon
+\end{aligned}
+$$
 
-$$+ \beta_4*\text{prevelant Hyp} + \beta_5*\text{BP} + \beta_6*\text{diabetes} + \epsilon$$
 Here we have included all variables that were considered signficiantly correlated with the outcome under the $\chi^2$ test of independence. This includes conditioning on mediator variables such as a diabetes, a distinct diference from the causal models presented below. In order to obtain an estimate of $E(Y | A=a_i)$ we simply call the predict method on our existing data (with no specific intervention) and average the results.
 
 ```{r, echo=FALSE}
@@ -329,10 +333,9 @@ traditional_upper_ci <- c(upper_1,upper_2,upper_3,upper_4)
 In order to evaluate our causal estimate we implemented a non-parametric simple substiution estimator for the conditional mean outcome. We used a saturated logistic regression model that included all possible interaction terms to model $P(Y | A=a ,W)$. The resulting estimator is given for the $i^{th}$ bin by 
 
 
-$$ SS^{i} = E_o[E_o[Y | A=a_i,W]]$$
+$$ SS^{i} = E_0[E_0[Y|A=a_i,W]]$$
 
 Confidence intervals were obtained via the bootstrap.  
-
 
 ```{r, echo=FALSE, cache=TRUE}
 library(mgcv)
@@ -367,14 +370,21 @@ for (i in 1:length(levels(fhs_binned_sample$cigsPerDay))){
 }
 ```
 
-### IPTW
+### Inverse Probability of Treatment Weighting (IPTW)
 
 In order to evaluate our causal estimate we examined three variations on the traditional IPTW estimator as follows. 
 
 For the $i^{th}$ bin:
 
 $$IPTW^i = \frac{1}{n_i} \sum_{j}^{n_i} Y\frac{ \mathbb{I} [A = i]}{P(A = i | W)}$$ 
-We evaluated 1) simple IPTW 2) horvitz thompson weighted IPTW 3) IPTW with variance derived from influence curve calculations. 
+
+We evaluated 3 IPTW estimators:
+
+\begin{itemize}
+\item the simple IPTW estimator
+\item the Horvitz-Thompson weighted IPTW estimator 
+\item the IPTW estimator with variance derived from influence curve (IC) calculations
+\end{itemize}
 
 
 
@@ -468,13 +478,19 @@ hist(wt_2,xlab="IPTW Weights of bin 2", main = "")
 hist(wt_3,xlab="IPTW Weights of bin 3", main = "")
 hist(wt_4,xlab="IPTW Weights of bin 4", main = "")
 ```
-We can see from the weight histograms that bin 2 has the largest discrepency in the weighting. This may help explain why we see a protective effect of smoking in bin 2. 
+We can see from the weight histograms that the second bin has the largest discrepency in the weighting. This may help explain why we see a protective effect of smoking in the second bin. 
 
-### TMLE
+### Targeted Maximum Likelihood Estimator (TMLE)
 
-Finally we examined our causal estimate under targeted maximum likelihood. In our superlearner library we evaluated 4 candidate algorithms 
+Finally, we examined our causal estimate under targeted maximum likelihood. In our superlearner library we evaluated 4 candidate algorithms:
 
-$$\{\text{Sl.glmnet,SL.randomForest,SL.nnet,SL.earth\}}$$
+\begin{itemize}
+\item Penalized regression using elastic net (SL.glmnet)
+\item Random forest (SL.randomForest)
+\item Neurel network (SL.nnet)
+\item Multivariate adaptive regression splines (SL.earth)
+\end{itemize}
+
 Both our estimate for the conditional mean outcome and the treatment probability were obtained from superlearner. 
 
 ```{r, echo=FALSE}
@@ -627,7 +643,8 @@ ggplot(estimates_df, aes(y=at,x=x,color=Method)) +geom_errorbar(aes(x=x,ymin=at_
   theme_bw() + ylab("Probability of CHD") + xlab("Cigs Per Day")
 ```
 
-As we can see from Fig. 4 the glm estimate is highly variable compared with the causal estimator. In addition we see that estimates given by the horvitz thompson IPTW and simple IPTW are quite comaprable with only slightly smaller confidence intervals under horvitz thompson, as to be expected. The theoertical intervals obtained from the influence curve for IPTW were slightly larger than the bootstrap intervals, which might be an issue with the bootstrap sample size. Finally, the estimates from TMLE were conservative with respect to the other estimators
+As we can see from Fig. 4 the glm estimate is highly variable compared with the causal estimator. In addition we see that estimates given by the Horvitz-Thompson IPTW and simple IPTW estimators are quite comaprable with only slightly smaller confidence intervals under horvitz thompson, as to be expected. The theoertical intervals obtained from the influence curve for the IPTW estimator were slightly larger than the bootstrap intervals, which might be an issue with the bootstrap sample size. Finally, the estimates from TMLE were conservative with respect to the other estimators
+
 ## Step 7. Result Interpretation
 
 <!-- What is the statistical interpretation of your analyses? Discuss differences (or lack thereof) in the estimates provided by the different estimators. What is the causal interpretation of your results and how plausible is it? What are key limitations of your analysis? How might these results (if at all) inform policy, understanding, and/or the design of future studies? -->
